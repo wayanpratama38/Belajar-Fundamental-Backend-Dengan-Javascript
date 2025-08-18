@@ -1,9 +1,11 @@
 'use strict';
 
 import Hapi from '@hapi/hapi';
-import routes from './src/api/notes/routes';
+import BookServices from './src/services/inMemory/BooksService';
+import bookPlugin from "./src/api/notes/index"
 
 const init = async () : Promise<void> => {
+  const bookService = new BookServices()
   const server : Hapi.Server =  Hapi.server({
     port: 9000,
     host : 'localhost',
@@ -15,8 +17,14 @@ const init = async () : Promise<void> => {
   });
 
 
-  server.route(routes);
 
+  await server.register([{
+    plugin : bookPlugin,
+    options : {
+      service : BookServices
+    }
+  }
+  ])
   await server.start();
   console.log(`Server berjalan pada port ${server.info.uri}`);
 };

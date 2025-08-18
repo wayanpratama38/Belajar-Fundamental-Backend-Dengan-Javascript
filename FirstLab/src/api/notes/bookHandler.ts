@@ -37,7 +37,7 @@ export default class BookHandler {
         }   
     }
 
-    getBookHandler(h :ResponseToolkit) : ResponseObject {
+    getBooksHandler(reqeust  : Request, h :ResponseToolkit) : ResponseObject {
         try {
             const books = this._service.getAllBook();
             return h.response({
