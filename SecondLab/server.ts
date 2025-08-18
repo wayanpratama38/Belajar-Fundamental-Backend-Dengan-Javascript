@@ -3,6 +3,7 @@
 import Hapi from '@hapi/hapi';
 import BookServices from './src/services/inMemory/booksService';
 import bookPlugin from "./src/api/notes/index"
+import { BooksValidator } from './src/validator/books';
 
 const init = async () : Promise<void> => {
   const bookService = new BookServices()
@@ -19,7 +20,8 @@ const init = async () : Promise<void> => {
   await server.register([{
     plugin : bookPlugin,
     options : {
-      service : bookService
+      service : bookService,
+      validator : BooksValidator
     }
   }
   ])

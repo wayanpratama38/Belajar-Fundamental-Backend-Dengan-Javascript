@@ -73,5 +73,9 @@ interface AddBook {
     tags : String,
 }
 
+interface BooksValidatorInterface {
+    validatePayload(payload : InputBook | Partial<InputBook>) : void
+}
 
-export type { Book, BookPayload, BookQuery, BookParams, AddBook, InputBook};
+
+export type { Book, BookPayload, BookQuery, BookParams, AddBook, InputBook, BooksValidatorInterface};

@@ -1,11 +1,15 @@
 import type { Request, ResponseObject, ResponseToolkit } from "@hapi/hapi";
 import BookServices from "../../services/inMemory/booksService";
-import type { InputBook } from "../../interface/interface";
+import type { BooksValidatorInterface, InputBook } from "../../interface/interface";
+import { BooksValidator } from "../../validator/books";
 
 export default class BookHandler {
-    private _service : BookServices 
-    constructor (service : BookServices) {
-        this._service = service
+    private _service : BookServices
+    private _validator : BooksValidatorInterface
+
+    constructor (service : BookServices, validator : BooksValidatorInterface) {
+        this._service = service;
+        this._validator = validator;
 
         this.postBookHandler = this.postBookHandler.bind(this);
         this.getBooksHandler = this.getBooksHandler.bind(this);
@@ -17,6 +21,7 @@ export default class BookHandler {
 
     postBookHandler(request : Request, h : ResponseToolkit) : ResponseObject{
         try{
+            this._validator.validatePayload(request.payload as InputBook)
             const {name="untitled",year,author,summary,publisher,pageCount,readPage,reading} = request.payload as InputBook;
         
             const newBook = this._service.addBook({
@@ -81,6 +86,7 @@ export default class BookHandler {
 
     putBookByIdHandler(request: Request, h: ResponseToolkit) : ResponseObject {
         try {
+            this._validator.validatePayload(request.payload as Partial<InputBook>)
             const {id} = request.params;
             const payload = request.payload as Partial<InputBook>;
 
