@@ -1,4 +1,4 @@
-import BookServices from "../../services/inMemory/BooksService"
+import BookServices from "../../services/inMemory/booksService"
 import type {Server, Plugin} from "@hapi/hapi";
 import BookHandler from "./bookHandler";
 import routes from "./routes";

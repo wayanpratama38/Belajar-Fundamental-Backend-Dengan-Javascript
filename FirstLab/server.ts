@@ -1,7 +1,7 @@
 'use strict';
 
 import Hapi from '@hapi/hapi';
-import BookServices from './src/services/inMemory/BooksService';
+import BookServices from './src/services/inMemory/booksService';
 import bookPlugin from "./src/api/notes/index"
 
 const init = async () : Promise<void> => {
@@ -16,12 +16,10 @@ const init = async () : Promise<void> => {
     }
   });
 
-
-
   await server.register([{
     plugin : bookPlugin,
     options : {
-      service : BookServices
+      service : bookService
     }
   }
   ])

@@ -1,11 +1,18 @@
 import type { Request, ResponseObject, ResponseToolkit } from "@hapi/hapi";
-import BookServices from "../../services/inMemory/BooksService";
+import BookServices from "../../services/inMemory/booksService";
 import type { InputBook } from "../../interface/interface";
 
 export default class BookHandler {
     private _service : BookServices 
     constructor (service : BookServices) {
         this._service = service
+
+        this.postBookHandler = this.postBookHandler.bind(this);
+        this.getBooksHandler = this.getBooksHandler.bind(this);
+        this.getBookByIdHandler = this.getBookByIdHandler.bind(this);
+        this.putBookByIdHandler = this.putBookByIdHandler.bind(this);
+        this.deleteBookByIdHandler = this.deleteBookByIdHandler.bind(this);
+
     }
 
     postBookHandler(request : Request, h : ResponseToolkit) : ResponseObject{
@@ -37,9 +44,9 @@ export default class BookHandler {
         }   
     }
 
-    getBooksHandler(reqeust  : Request, h :ResponseToolkit) : ResponseObject {
+    getBooksHandler(request  : Request, h :ResponseToolkit) : ResponseObject {
         try {
-            const books = this._service.getAllBook();
+            const books = this._service.getAllBooks();
             return h.response({
                 status : "success",
                 data : {

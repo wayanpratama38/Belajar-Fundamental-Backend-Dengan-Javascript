@@ -31,7 +31,7 @@ export default class BookServices {
         return newBook;
     }
 
-    getAllBook() : Book[] {
+    getAllBooks() : Book[] {
        return this._books;
     }
 
