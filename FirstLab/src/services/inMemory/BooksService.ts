@@ -3,7 +3,7 @@ import type { Book, InputBook } from "../../interface/interface";
 import { updateBookById } from "../../api/notes/handler";
 
 
-class BookServices { 
+export default class BookServices { 
 
     private _books : Book[];
 
@@ -45,7 +45,8 @@ class BookServices {
 
         const oldBook = this._books[index]!;
         const updatedAt = new Date().toISOString();
-        const finished = oldBook?.pageCount === updateValue.pageCount
+        const finished = (updateValue.readPage ?? oldBook.readPage) === (updateValue.pageCount ?? oldBook.pageCount);
+
 
         const updatedBook : Book = {
             ...oldBook,
@@ -70,5 +71,3 @@ class BookServices {
     }
 
 }
-
-module.exports = BookServices;
