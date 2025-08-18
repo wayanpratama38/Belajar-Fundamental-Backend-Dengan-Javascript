@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import type { Book, BookPayload, BookQuery, BookParams } from "../../interface/interface";
+import type { Book, BookPayload, BookQuery, BookParams } from "../../interface/interface.js";
 import books  from './books.js';
 import Hapi from "@hapi/hapi";
 
