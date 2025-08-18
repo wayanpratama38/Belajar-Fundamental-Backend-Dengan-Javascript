@@ -5,42 +5,75 @@ import {
   getBooksHandler,
   updateBookById
 } from './handler.js';
-import Hapi from "@hapi/hapi";
+import Hapi, { type ServerRoute } from "@hapi/hapi";
+import type { BookHandler } from '../../interface/handlerInterface.js';
 
 
-const routes : Hapi.ServerRoute[] = [
+// const routes : Hapi.ServerRoute[] = [
+//   {
+//     method : 'POST',
+//     path : '/books',
+//     handler : addBookHandler,
+//     options: {
+//       payload: {
+//         parse: true,
+//         allow: 'application/json'
+//       }
+//     }
+//   },
+//   {
+//     method : 'GET',
+//     path : '/books',
+//     handler : getBooksHandler
+//   },
+//   {
+//     method : 'GET',
+//     path : '/books/{bookId}',
+//     handler : getBookByIdHanlder
+//   },
+//   {
+//     method : 'PUT',
+//     path : '/books/{bookId}',
+//     handler : updateBookById
+//   },
+//   {
+//     method : 'DELETE',
+//     path : '/books/{bookId}',
+//     handler : deleteBookById,
+//   }
+// ];
+// export default routes;
+
+
+
+// TYPESCRIPT
+const routes = (handler: BookHandler) : ServerRoute[] => [
   {
     method : 'POST',
     path : '/books',
-    handler : addBookHandler,
-    options: {
-      payload: {
-        parse: true,
-        allow: 'application/json'
-      }
-    }
+    handler : handler.postBookHandler
   },
   {
     method : 'GET',
     path : '/books',
-    handler : getBooksHandler
+    handler : handler.getBooksHandler
   },
   {
     method : 'GET',
-    path : '/books/{bookId}',
-    handler : getBookByIdHanlder
+    path : '/books/{id}',
+    handler : handler.getBookByIdHandler
   },
   {
     method : 'PUT',
-    path : '/books/{bookId}',
-    handler : updateBookById
+    path : '/books/{id}',
+    handler : handler.putBookByIdHandler
   },
   {
     method : 'DELETE',
-    path : '/books/{bookId}',
-    handler : deleteBookById,
+    path : '/books/{id}',
+    handler : handler.deleteBookByIdHandler
   }
-];
+]
 
 
-export default routes;
+module.exports = routes;
