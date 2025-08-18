@@ -1,0 +1,21 @@
+{
+  "name": "belajar-fundamental-back-end-dengan-javascript",
+  "scripts": {
+    "start": "bun run server.js",
+    "dev": "bun --watch server.js"
+  },
+  "module": "server.js",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/hapi__hapi": "^21.0.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@hapi/hapi": "^21.4.0",
+    "nanoid": "^5.1.5"
+  }
+}
