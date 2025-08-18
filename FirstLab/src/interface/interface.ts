@@ -29,6 +29,21 @@ interface Book {
 }
 
 
+/**
+ * Input when creating new book
+ * No id or timestamps yet - it will be generated in services
+ */
+interface InputBook { 
+    name: string;
+    year: number;
+    author: string;
+    summary: string;
+    publisher: string;
+    pageCount: number;
+    readPage: number;
+    reading: boolean;
+}
+
 interface BookPayload { 
   name : string,
   year : number,
@@ -59,4 +74,4 @@ interface AddBook {
 }
 
 
-export type { Book, BookPayload, BookQuery, BookParams, AddBook };
+export type { Book, BookPayload, BookQuery, BookParams, AddBook, InputBook};
