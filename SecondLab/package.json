@@ -2,7 +2,9 @@
   "name": "belajar-fundamental-back-end-dengan-javascript",
   "scripts": {
     "start": "bun run server.js",
-    "dev": "bun --watch server.js"
+    "dev": "bun --watch server.js",
+    "migrate": "node-pg-migrate -j ts",
+    "migrate:create": "node-pg-migrate create"
   },
   "module": "server.js",
   "type": "module",
@@ -17,6 +19,8 @@
   "dependencies": {
     "@hapi/hapi": "^21.4.0",
     "joi": "^18.0.0",
-    "nanoid": "^5.1.5"
+    "nanoid": "^5.1.5",
+    "node-pg-migrate": "^8.0.3",
+    "pg": "^8.16.3"
   }
 }
