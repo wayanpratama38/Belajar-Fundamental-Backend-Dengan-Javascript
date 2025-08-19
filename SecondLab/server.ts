@@ -5,11 +5,18 @@ import BookServices from './src/services/inMemory/booksService';
 import bookPlugin from "./src/api/notes/index"
 import { BooksValidator } from './src/validator/books';
 
+declare module 'bun' {
+  interface ENV {
+    PORT : number,
+    HOST : string,
+  }
+}
+
 const init = async () : Promise<void> => {
   const bookService = new BookServices()
   const server : Hapi.Server =  Hapi.server({
-    port: 9000,
-    host : 'localhost',
+    port: process.env.PORT,
+    host : process.env.HOST,
     routes : {
       cors : {
         origin : ['*'],
