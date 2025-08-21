@@ -3,7 +3,7 @@
   "scripts": {
     "start": "bun run server.js",
     "dev": "bun --watch server.js",
-    "migrate": "node-pg-migrate -j ts",
+    "migrate": "node-pg-migrate",
     "migrate:create": "node-pg-migrate create"
   },
   "module": "server.js",
@@ -11,7 +11,8 @@
   "private": true,
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/hapi__hapi": "^21.0.0"
+    "@types/hapi__hapi": "^21.0.0",
+    "@types/pg": "^8.15.5"
   },
   "peerDependencies": {
     "typescript": "^5"
@@ -21,6 +22,6 @@
     "joi": "^18.0.0",
     "nanoid": "^5.1.5",
     "node-pg-migrate": "^8.0.3",
-    "pg": "^8.16.3"
+    "postgres": "^3.4.7"
   }
 }

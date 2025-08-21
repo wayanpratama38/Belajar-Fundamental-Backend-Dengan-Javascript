@@ -13,19 +13,19 @@
  * @property {string} insertedAt - Tanggal buku ditambahkan (format ISO String).
  * @property {string} updatedAt - Tanggal buku terakhir diperbarui (format ISO String).
  */
-interface Book { 
-    id : string,
-    name : string,
-    year : number,
-    author :string,
-    summary : string,
-    publisher : string,
-    pageCount : number,
-    readPage : number,
-    finished : boolean,
-    reading : boolean,
-    insertedAt : string,
-    updatedAt : string,
+interface Book {
+  id: string,
+  name: string,
+  year: number,
+  author: string,
+  summary: string,
+  publisher: string,
+  pageCount: number,
+  readPage: number,
+  finished: boolean,
+  reading: boolean,
+  insertedAt: string,
+  updatedAt: string,
 }
 
 
@@ -33,49 +33,49 @@ interface Book {
  * Input when creating new book
  * No id or timestamps yet - it will be generated in services
  */
-interface InputBook { 
-    name: string;
-    year: number;
-    author: string;
-    summary: string;
-    publisher: string;
-    pageCount: number;
-    readPage: number;
-    reading: boolean;
+interface InputBook {
+  name: string;
+  year: number;
+  author: string;
+  summary: string;
+  publisher: string;
+  pageCount: number;
+  readPage: number;
+  reading: boolean;
 }
 
-interface BookPayload { 
-  name : string,
-  year : number,
-  author :string,
-  summary : string,
-  publisher : string,
-  pageCount : number,
-  readPage : number,
-  reading : boolean
+interface BookPayload {
+  name: string,
+  year: number,
+  author: string,
+  summary: string,
+  publisher: string,
+  pageCount: number,
+  readPage: number,
+  reading: boolean
 }
 
 
-interface BookQuery  {
-    reading : boolean,
-    finished : boolean,
-    name : string,
+interface BookQuery {
+  reading: boolean,
+  finished: boolean,
+  name: string,
 }
 
 interface BookParams {
-    bookId : string
+  bookId: string
 }
 
 
-interface AddBook { 
-    title : String,
-    body : String,
-    tags : String,
+interface AddBook {
+  title: String,
+  body: String,
+  tags: String,
 }
 
 interface BooksValidatorInterface {
-    validatePayload(payload : InputBook | Partial<InputBook>) : void
+  validatePayload(payload: InputBook | Partial<InputBook>): void
 }
 
 
-export type { Book, BookPayload, BookQuery, BookParams, AddBook, InputBook, BooksValidatorInterface};
+export type { Book, BookPayload, BookQuery, BookParams, AddBook, InputBook, BooksValidatorInterface };
