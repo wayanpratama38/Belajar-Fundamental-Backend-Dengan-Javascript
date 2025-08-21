@@ -1,7 +1,7 @@
 'use strict';
 
 import Hapi from '@hapi/hapi';
-import BookServices from './src/services/inMemory/booksService';
+import BookServices from './src/services/postgres/booksService';
 import bookPlugin from "./src/api/notes/index"
 import { BooksValidator } from './src/validator/books';
 

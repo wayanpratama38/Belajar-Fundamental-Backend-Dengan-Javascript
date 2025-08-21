@@ -1,7 +1,8 @@
 import type { Request, ResponseObject, ResponseToolkit } from "@hapi/hapi";
-import BookServices from "../../services/inMemory/booksService";
+import BookServices from "../../services/postgres/booksService";
 import type { BooksValidatorInterface, InputBook } from "../../interface/interface";
 import { BooksValidator } from "../../validator/books";
+import { nanoid } from "nanoid";
 
 export default class BookHandler {
   private _service: BookServices
@@ -19,12 +20,13 @@ export default class BookHandler {
 
   }
 
-  postBookHandler(request: Request, h: ResponseToolkit): ResponseObject {
+  async postBookHandler(request: Request, h: ResponseToolkit):Promise<ResponseObject> {
     try {
       this._validator.validatePayload(request.payload as InputBook)
+      
       const { name = "untitled", year, author, summary, publisher, pageCount, readPage, reading } = request.payload as InputBook;
 
-      const newBook = this._service.addBook({
+      const newBook = await this._service.addBook({    
         name,
         year,
         author,
@@ -39,7 +41,7 @@ export default class BookHandler {
       return h.response({
         status: "success",
         message: "Book added successfully",
-        data: { bookId: newBook.id }
+        data: { bookId : newBook}
       }).code(201)
     } catch (error: any) {
       return h.response({
@@ -49,9 +51,9 @@ export default class BookHandler {
     }
   }
 
-  getBooksHandler(request: Request, h: ResponseToolkit): ResponseObject {
+  async getBooksHandler(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     try {
-      const books = this._service.getAllBooks();
+      const books =await this._service.getAllBooks();
       return h.response({
         status: "success",
         data: {
@@ -66,10 +68,10 @@ export default class BookHandler {
     }
   }
 
-  getBookByIdHandler(request: Request, h: ResponseToolkit): ResponseObject {
+  async getBookByIdHandler(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     try {
       const { id } = request.params;
-      const book = this._service.getBookById(id);
+      const book = await this._service.getBookById(id);
       return h.response({
         status: 'success',
         data: {
@@ -84,13 +86,13 @@ export default class BookHandler {
     }
   }
 
-  putBookByIdHandler(request: Request, h: ResponseToolkit): ResponseObject {
+  async putBookByIdHandler(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     try {
       this._validator.validatePayload(request.payload as Partial<InputBook>)
       const { id } = request.params;
       const payload = request.payload as Partial<InputBook>;
 
-      const updatedBook = this._service.editBookById(id, payload);
+      const updatedBook = await this._service.editBookById(id, payload);
       return h.response({
         status: "success",
         message: "Book updated successfully",
@@ -106,10 +108,10 @@ export default class BookHandler {
     }
   }
 
-  deleteBookByIdHandler(request: Request, h: ResponseToolkit): ResponseObject {
+  async deleteBookByIdHandler(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     try {
       const { id } = request.params
-      this._service.deleteBookById(id);
+      await this._service.deleteBookById(id);
       return h.response({
         status: "success",
         message: "Book deleted successfully"

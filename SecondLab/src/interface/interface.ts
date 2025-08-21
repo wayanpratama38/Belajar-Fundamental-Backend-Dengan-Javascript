@@ -67,11 +67,11 @@ interface BookParams {
 }
 
 
-interface AddBook {
-  title: String,
-  body: String,
-  tags: String,
-}
+// interface AddBook {
+//   title: String,
+//   body: String,
+//   tags: String,
+// }
 
 interface BooksValidatorInterface {
   validatePayload(payload: InputBook | Partial<InputBook>): void
