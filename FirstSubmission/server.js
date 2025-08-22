@@ -1,3 +1,4 @@
+import "dotenv/config"
 import Hapi from "@hapi/hapi";
 import SongPlugin from "./src/api/plugin.js";
 
@@ -18,6 +19,7 @@ const init = async () => {
   })
 
   await server.start();
+  console.log(process.env.DATABASE_URL);
   console.log(`Server running at ${server.info.uri}`);
 }
 init();
