@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 import { Pool } from "pg";
 
-export default class SongService {
+export default class SongsService {
   _pool;
 
   constructor() {
@@ -9,18 +9,18 @@ export default class SongService {
   }
 
   async addSong(request) {
-    const id = nanoid(16);
+    const songId = nanoid(16);
     const { title, year, genre, performer, duration, albumId } = request
 
     const query = {
       text: `
         INSERT INTO songs
-        (id,title,year,genre,performer,duration,albumId) 
+        (songId,title,year,genre,performer,duration,albumId) 
         VALUES ($1,$2,$3,$4,$5,$6,$7)
-        RETURNING id;
+        RETURNING songId;
       `,
       values: [
-        id,
+        songId,
         title,
         year,
         genre,
@@ -37,38 +37,38 @@ export default class SongService {
     return result;
   }
 
-  async getSongById(id) {
+  async getSongById(songId) {
     const query = {
       text : `
-        SELECT * FROM songs WHERE id == $1
+        SELECT * FROM songs WHERE songId == $1
       `,
-      values : [id]
+      values : [songId]
     }
     const result = await this._pool.query(query)
     return result;
   }
 
-  async updateSongById(id,request) { 
+  async updateSongById(songId,request) { 
     const { title, year, genre, performer, duration, albumId } = request
     const query = {
       text : `
         UPDATE songs
         SET title=$1,year=$2,genre=$3,performer=$4,duration=$5,albumId=$6
-        WHERE id == $7
-        RETURNING id
+        WHERE songId == $7
+        RETURNING songId
       `,
-      values : [title,year,genre,performer,duration,albumId,id]
+      values : [title,year,genre,performer,duration,albumId,songId]
     }  
     const result = await this._pool.query(query);
   }
 
-  async deleteSong(id) {
+  async deleteSong(songId) {
     const query = {
       text : `
-        DELETE * FROM songs WHERE id == $1
-        RETURNING id
+        DELETE * FROM songs WHERE songId == $1
+        RETURNING songId
       `,
-      values : [1]
+      values : [songId]
     }
     const result = await this._pool.query(query);
   }

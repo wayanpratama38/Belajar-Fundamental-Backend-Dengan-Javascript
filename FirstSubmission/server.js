@@ -1,4 +1,5 @@
 import Hapi from "@hapi/hapi";
+import SongPlugin from "./src/api/plugin.js";
 
 
 const init = async () => {
@@ -11,6 +12,10 @@ const init = async () => {
       },
     }
   });
+
+  await server.register({
+    plugin : SongPlugin
+  })
 
   await server.start();
   console.log(`Server running at ${server.info.uri}`);
