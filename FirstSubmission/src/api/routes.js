@@ -1,30 +1,53 @@
-import SongsHandler from "./handler.js"
-const handlerInstance = new SongsHandler()
-const routes = (handler = handlerInstance ) => [
+import SongsHandler from "./songHandler.js"
+import AlbumsHandler from "./albumHandler.js"
+
+const routes = () => [
+    // Handler for albums
+    {
+        method : "GET",
+        path : "/albums/{id}",
+        handler : AlbumsHandler.getAlbum()
+    },
+    {
+        method : "POST",
+        path : "/albums",
+        handler : AlbumsHandler.addAlbum()
+    },
+    {
+        method : "PUT",
+        path : "/albums/{id}",
+        handler : AlbumsHandler.updateAlbum()
+    },
+    {
+        method : "DELETE",
+        path : "/albums/{id}",
+        handler : AlbumsHandler.deleteAlbum()
+    },
+    // Handler for songs
     {
         method : "POST",
         path : "/songs",
-        handler : handler.postNewSong
+        handler : SongsHandler.postNewSong
     },
     {
         method : "GET",
         path : "/songs",
-        handler : handler.getAllSongs
+        handler : SongsHandler.getAllSongs
     },
     {
         method : "GET",
         path : "/songs/{id}",
-        handler : handler.getSongById
+        handler : SongsHandler.getSongById
     },
     {
         method : "PUT",
         path : "/songs/{id}",
-        handler : handler.updateSong
+        handler : SongsHandler.updateSong
     },    
     {
         method : "DELETE",
         path : "/songs/{id}",
-        handler : handler.deleteSong
+        handler : SongsHandler.deleteSong
     }
 ]
     

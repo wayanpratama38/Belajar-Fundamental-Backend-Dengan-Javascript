@@ -1,4 +1,4 @@
-import SongsService from "../service/service.js";
+import SongsService from "../service/songService.js";
 
 export default class SongsHandler{
     // to handle request
@@ -20,8 +20,7 @@ export default class SongsHandler{
         const result = await this._service.addSong(
             request
         ) 
-        request.log('error','error event')
-
+        
         return h.response({
             status : "success",
             data : {
