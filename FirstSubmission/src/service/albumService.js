@@ -1,5 +1,6 @@
 import {Pool} from 'pg';
 import {nanoid} from "nanoid";
+import {mapAlbumDBToModel} from "../utils/utils.js";
 
 export default class AlbumsService {
     _pool;
@@ -21,22 +22,23 @@ export default class AlbumsService {
             values : [id,name,year]
         }
         const result = await this._pool.query(query);
-        if(!result.row[0].album_id) {
+        if(!result.rows[0].album_id) {
             throw new InvariantError('Albums gagal ditambahkan');
         }
 
-        return result.row[0].album_id;
+        return result.rows[0].album_id;
     }
 
     async getAlbumById(album_id){
         const query = {
             text : `
-                SELECT * FROM albums WHERE album_id == $1
+                SELECT * FROM albums WHERE album_id = $1
             `,
             values : [album_id]
         };
         const result = await this._pool.query(query);
-        return result.row[0];
+        console.log(result.rows.map(mapAlbumDBToModel));
+        return result.rows.map(mapAlbumDBToModel);
     }
 
     async updateAlbumById(album_id,request){

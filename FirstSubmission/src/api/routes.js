@@ -1,53 +1,55 @@
 import SongsHandler from "./songHandler.js"
 import AlbumsHandler from "./albumHandler.js"
+const albumHandler = new AlbumsHandler();
+const songHandler = new SongsHandler();
 
 const routes = () => [
     // Handler for albums
     {
         method : "GET",
         path : "/albums/{id}",
-        handler : AlbumsHandler.getAlbum
+        handler : albumHandler.getAlbum
     },
     {
         method : "POST",
         path : "/albums",
-        handler : AlbumsHandler.addAlbum
+        handler : albumHandler.addAlbum
     },
     {
         method : "PUT",
         path : "/albums/{id}",
-        handler : AlbumsHandler.updateAlbum
+        handler : albumHandler.updateAlbum
     },
     {
         method : "DELETE",
         path : "/albums/{id}",
-        handler : AlbumsHandler.deleteAlbum
+        handler : albumHandler.deleteAlbum
     },
     // Handler for songs
     {
         method : "POST",
         path : "/songs",
-        handler : SongsHandler.postNewSong
+        handler : songHandler.postNewSong
     },
     {
         method : "GET",
         path : "/songs",
-        handler : SongsHandler.getAllSongs
+        handler : songHandler.getAllSongs
     },
     {
         method : "GET",
         path : "/songs/{id}",
-        handler : SongsHandler.getSongById
+        handler : songHandler.getSongById
     },
     {
         method : "PUT",
         path : "/songs/{id}",
-        handler : SongsHandler.updateSong
+        handler : songHandler.updateSong
     },    
     {
         method : "DELETE",
         path : "/songs/{id}",
-        handler : SongsHandler.deleteSong
+        handler : songHandler.deleteSong
     }
 ]
     

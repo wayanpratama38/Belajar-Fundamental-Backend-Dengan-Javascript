@@ -18,7 +18,7 @@ export default class AlbumsHandler{
         return h.response({
             status : 'success',
             data : {
-                albumId : result
+                id : result
             }
         }).code(201);
             
