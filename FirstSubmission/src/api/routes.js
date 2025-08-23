@@ -6,22 +6,22 @@ const routes = () => [
     {
         method : "GET",
         path : "/albums/{id}",
-        handler : AlbumsHandler.getAlbum()
+        handler : AlbumsHandler.getAlbum
     },
     {
         method : "POST",
         path : "/albums",
-        handler : AlbumsHandler.addAlbum()
+        handler : AlbumsHandler.addAlbum
     },
     {
         method : "PUT",
         path : "/albums/{id}",
-        handler : AlbumsHandler.updateAlbum()
+        handler : AlbumsHandler.updateAlbum
     },
     {
         method : "DELETE",
         path : "/albums/{id}",
-        handler : AlbumsHandler.deleteAlbum()
+        handler : AlbumsHandler.deleteAlbum
     },
     // Handler for songs
     {
