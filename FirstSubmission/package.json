@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
     "migrate": "node-pg-migrate",
-    "migrate:create": "dotenv -e .env -- node-pg-migrate create --migrations-dir migrations"
+    "start":"http-server"
   },
   "author": "wynprtm",
   "license": "ISC",
@@ -22,6 +22,7 @@
     "pg": "^8.16.3"
   },
   "devDependencies": {
-    "dotenv-cli": "^10.0.0"
+    "dotenv-cli": "^10.0.0",
+    "http-server": "^14.1.1"
   }
 }

@@ -37,8 +37,9 @@ export default class AlbumsService {
             values : [album_id]
         };
         const result = await this._pool.query(query);
-        console.log(result.rows.map(mapAlbumDBToModel));
-        return result.rows.map(mapAlbumDBToModel);
+        const pars = result.rows.map(mapAlbumDBToModel)
+        
+        return pars[0];
     }
 
     async updateAlbumById(album_id,request){
@@ -51,16 +52,16 @@ export default class AlbumsService {
             `,
             values : [name,year,album_id]
         }
-        const result = await this._pool.query(query);
+        await this._pool.query(query);
     }
 
     async deleteAlbumById(album_id) {
         const query = {
             text : `
-                DELETE * FROM albums WHERE album_id==$1
+                DELETE * FROM albums WHERE album_id = $1
             `,
             values : [album_id]
         }
-        const result = await this._pool.query(query)
+        await this._pool.query(query)
     }
 }

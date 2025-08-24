@@ -5,8 +5,8 @@ import SongPlugin from "./src/api/plugin.js";
 
 const init = async () => {
   const server = Hapi.server({
-    port: 9000,
-    host: 'localhost',
+    port: process.env.PORT,
+    host: process.env.HOST,
     routes: {
       cors: {
         origin: ['*'],

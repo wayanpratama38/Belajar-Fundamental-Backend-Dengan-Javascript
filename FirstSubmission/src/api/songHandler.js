@@ -17,14 +17,12 @@ export default class SongsHandler{
     }
 
     async postNewSong(request,h) {
-        const result = await this._service.addSong(
-            request
-        ) 
-        
+        const result = await this._service.addSong(request.payload) 
+        console.log(result);
         return h.response({
             status : "success",
             data : {
-                songId : result.songId
+                songId : result
             }
         }).code(201)
     }
@@ -33,7 +31,9 @@ export default class SongsHandler{
         const result = await this._service.getAllSongs();
         return h.response({
             status : "success",
-            data : { result }
+            data : { 
+                songs : result 
+            }
         }).code(200)
     }
 
@@ -42,7 +42,9 @@ export default class SongsHandler{
         const result = await this._service.getSongById(id);
         return h.response({
             status : "success",
-            data : { result }
+            data : { 
+                song : result
+             }
         })
     }
 
