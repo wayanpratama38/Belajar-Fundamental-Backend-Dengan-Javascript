@@ -1,10 +1,13 @@
 import SongsHandler from "./songHandler.js"
 import AlbumsHandler from "./albumHandler.js"
+
+// Create instance / classes
 const albumHandler = new AlbumsHandler();
 const songHandler = new SongsHandler();
 
+// Routes function returning all the corresponding method, path and handler 
 const routes = () => [
-    // Handler for albums
+    // Albums routes
     {
         method : "GET",
         path : "/albums/{id}",
@@ -25,7 +28,7 @@ const routes = () => [
         path : "/albums/{id}",
         handler : albumHandler.deleteAlbum
     },
-    // Handler for songs
+    // Song routes
     {
         method : "POST",
         path : "/songs",

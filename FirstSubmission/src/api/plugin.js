@@ -1,5 +1,6 @@
 import routes from "./routes.js"
 
+// Initiate new plugin
 const SongPlugin = {
     name : 'songs',
     version : '1.0.0',

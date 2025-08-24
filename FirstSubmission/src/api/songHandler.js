@@ -1,9 +1,9 @@
 import SongsService from "../service/songService.js";
 
 export default class SongsHandler{
-    // to handle request
-    _service;
-    _validator;
+    // Private variable
+    _service; // for songsService 
+    _validator; // for songValidator
 
     constructor() { 
         this._service = new SongsService();
@@ -16,9 +16,23 @@ export default class SongsHandler{
         this.deleteSong = this.deleteSong.bind(this)
     }
 
+    /**
+     * Handler for adding new song
+     * @param request request from user (including request paramter and payload)
+     * @param h  response to user 
+     * @returns HTTP response with status success or fail and data : { songId }
+     * 
+     * @example
+     * {
+     *  status : success
+     *  data : {
+     *      songId : "afjnakfjanf-efsejfse"
+     *  }
+     * }
+     */
     async postNewSong(request,h) {
         const result = await this._service.addSong(request.payload) 
-        console.log(result);
+        // TODO : ADD ERROR HANDLING
         return h.response({
             status : "success",
             data : {
@@ -27,8 +41,40 @@ export default class SongsHandler{
         }).code(201)
     }
 
+    /**
+     * Handler for getting all songs from database
+     * @param request request from user (including request paramter and payload)
+     * @param h  response to user 
+     * @returns HTTP response with status success or fail and data : { songs : song }
+     * 
+     * @example
+     * {
+     *  status : success
+     *  data : {
+     *      songs : [
+     *      {
+     *          id : "mnw9GkVlivj0-hOy",
+     *          title : "Song title" ,
+     *          year : 1234,
+     *          genre : "rock",
+     *          duration :1235,
+     *          albumId:"2kdjfjefb-21afef",
+     *      },
+     *      {
+     *          id : "mnw9GkVlivj0-hOy",
+     *          title : "Song title" ,
+     *          year : 1234,
+     *          genre : "rock",
+     *          duration :1235,
+     *          albumId:"2kdjfjefb-21afef",
+     *      }
+     *    ]
+     *  }
+     * }
+     */
     async getAllSongs(request,h) {
         const result = await this._service.getAllSongs();
+        // TODO : ADD ERROR HANDLING
         return h.response({
             status : "success",
             data : { 
@@ -37,29 +83,77 @@ export default class SongsHandler{
         }).code(200)
     }
 
+    /**
+     * Handler for getting specify song from database
+     * @param request request from user (including request paramter and payload)
+     * @param h  response to user 
+     * @returns HTTP response with status success or fail and data : { song : result }
+     * 
+     * @example
+     * {
+     *  status : success
+     *  data : {
+     *      song : {
+     *          id : "mnw9GkVlivj0-hOy",
+     *          title : "Song title" ,
+     *          year : 1234,
+     *          genre : "rock",
+     *          duration :1235,
+     *          albumId:"2kdjfjefb-21afef",
+     *      }
+     *  }
+     * }
+     */
     async getSongById(request,h) {
         const {id} = request.params;
         const result = await this._service.getSongById(id);
+        // TODO : ADD ERROR HANDLING
         return h.response({
             status : "success",
             data : { 
                 song : result
-             }
+            }
         })
     }
 
+    /**
+     * Handler for updating specify song information from database
+     * @param request request from user (including request paramter and payload)
+     * @param h  response to user 
+     * @returns HTTP response with status success or fail and message
+     * 
+     * @example
+     * {
+     *  status : success
+     *  message : Sucessfully updating song information
+     * }
+     */
     async updateSong(request,h) { 
         const { id } = request.params
         await this._service.updateSongById(id,request.payload);
+        // TODO : ADD ERROR HANDLING
         return h.response({
             status : "success",
             message : "Successfully updating song information"
         }).code(200)
     }
 
+    /**
+     * Handler for deleting specify song from database
+     * @param request request from user (including request paramter and payload)
+     * @param h  response to user 
+     * @returns HTTP response with status success or fail and message
+     * 
+     * @example
+     * {
+     *  status : success
+     *  message : Sucessfully delete song
+     * }
+     */
     async deleteSong(request,h){
         const { id } = request.params
         await this._service.deleteSong(id);
+        // TODO : ADD ERROR HANDLING
         return h.response({
             status : "success",
             message : "Successfully delete song"
