@@ -1,12 +1,14 @@
 import AlbumsService from '../service/albumService.js';
-
+import { Validator } from '../validator/validator.js';
 
 export default class AlbumsHandler{
     // Private variables
     _service;
+    _validator;
 
     constructor(){
         this._service = new AlbumsService();
+        this._validator = Validator; 
         this.addAlbum = this.addAlbum.bind(this);
         this.getAlbum = this.getAlbum.bind(this);
         this.updateAlbum = this.updateAlbum.bind(this);
@@ -28,12 +30,13 @@ export default class AlbumsHandler{
      * } 
      */
     async addAlbum(request,h){
+        this._validator.validateAlbumPayload(request.payload);
         const result = await this._service.addAlbum(request.payload);
-        // TODO : ADD ERROR HANDLING
+        
         return h.response({
             status : 'success',
             data : {
-                id : result
+                albumId : result
             }
         }).code(201);
             
@@ -60,7 +63,7 @@ export default class AlbumsHandler{
     async getAlbum(request,h){
         const { id } = request.params;
         const result = await this._service.getAlbumById(id);
-        // TODO : ADD ERROR HANDLING
+        
         return h.response({
             status : 'success',
             data : {
@@ -82,9 +85,10 @@ export default class AlbumsHandler{
      * }
      */
     async updateAlbum(request,h){
+        this._validator.validateAlbumPayload(request.payload);
         const { id } = request.params;
         const result = await this._service.updateAlbumById(id,request.payload);
-        // TODO : ADD ERROR HANDLING
+        
         return h.response({
             status : 'success',
             message : 'Successfully update album information'
@@ -105,8 +109,8 @@ export default class AlbumsHandler{
      */
     async deleteAlbum(request,h){
         const { id } = request.params;
-        const result = await this._service.deleteAlbumById(id)
-        // TODO : ADD ERROR HANDLING
+        await this._service.deleteAlbumById(id)
+        
         return h.response({
             status : 'success',
             message : 'Successfully delete album'

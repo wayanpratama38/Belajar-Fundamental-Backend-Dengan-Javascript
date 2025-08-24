@@ -1,4 +1,5 @@
 import SongsService from "../service/songService.js";
+import { Validator } from "../validator/validator.js";
 
 export default class SongsHandler{
     // Private variable
@@ -7,7 +8,7 @@ export default class SongsHandler{
 
     constructor() { 
         this._service = new SongsService();
-        // this._validator = validator;
+        this._validator = Validator;
 
         this.postNewSong = this.postNewSong.bind(this)
         this.getAllSongs = this.getAllSongs.bind(this)
@@ -31,8 +32,9 @@ export default class SongsHandler{
      * }
      */
     async postNewSong(request,h) {
+        this._validator.validateSongPayload(request.payload);
         const result = await this._service.addSong(request.payload) 
-        // TODO : ADD ERROR HANDLING
+        
         return h.response({
             status : "success",
             data : {
@@ -74,11 +76,12 @@ export default class SongsHandler{
      */
     async getAllSongs(request,h) {
         const result = await this._service.getAllSongs();
-        // TODO : ADD ERROR HANDLING
+        
         return h.response({
             status : "success",
             data : { 
-                songs : result 
+                songs :result
+                
             }
         }).code(200)
     }
@@ -107,13 +110,13 @@ export default class SongsHandler{
     async getSongById(request,h) {
         const {id} = request.params;
         const result = await this._service.getSongById(id);
-        // TODO : ADD ERROR HANDLING
+        
         return h.response({
             status : "success",
             data : { 
                 song : result
             }
-        })
+        }).code(200)
     }
 
     /**
@@ -129,9 +132,11 @@ export default class SongsHandler{
      * }
      */
     async updateSong(request,h) { 
+        this._validator.validateSongPayload(request.payload);
         const { id } = request.params
         await this._service.updateSongById(id,request.payload);
-        // TODO : ADD ERROR HANDLING
+        
+        
         return h.response({
             status : "success",
             message : "Successfully updating song information"
@@ -153,10 +158,10 @@ export default class SongsHandler{
     async deleteSong(request,h){
         const { id } = request.params
         await this._service.deleteSong(id);
-        // TODO : ADD ERROR HANDLING
+        
         return h.response({
             status : "success",
             message : "Successfully delete song"
-        })
+        }).code(200);
     }
 }

@@ -1,6 +1,7 @@
 import { nanoid } from "nanoid";
 import { Pool } from "pg";
 import { mapSongDBToModel } from "../utils/utils.js";
+import NotFoundError from "../exceptions/notFoundError.js";
 
 export default class SongsService {
   // Private variable
@@ -18,7 +19,7 @@ export default class SongsService {
   async addSong(request) {
     const id = nanoid(16);
     const { title, year, genre, performer, duration, albumId } = request
-    console.log("IN SERVICE",title,year,genre,performer,duration,albumId)
+    
     const query = {
       text: `
         INSERT INTO songs (song_id, title, year, genre, performer, duration, "albumId")
@@ -48,9 +49,9 @@ export default class SongsService {
    */
   async getAllSongs() {
     const query = await this._pool.query("SELECT * FROM songs");
-    const result = query.rows.map(mapSongDBToModel);
-    // TODO : ADD ERROR HANDLING
-    
+    const result = query.rows.map(mapSongDBToModel).map((song)=> {
+      return {id : song.id,title : song.title, performer : song.performer}
+    });
     return result;
   }
 
@@ -60,7 +61,6 @@ export default class SongsService {
    * @returns song detail information with same id as requested
    */
   async getSongById(id) {
-    console.log(id);
     const query = {
       text : `
         SELECT * FROM songs WHERE song_id = $1
@@ -68,8 +68,12 @@ export default class SongsService {
       values : [id]
     }
     const result = await this._pool.query(query)
-    // TODO : ADD ERROR HANDLING
+    // TODO : ADD ERROR HANDLING (NOT TESTED YET!)
     const song = result.rows.map(mapSongDBToModel);
+    const success = song.filter((song_id)=> song_id.id === id)[0];
+    if(!success){
+      throw new NotFoundError("Lagu tidak ditemukan!")
+    }
     return song[0];
   }
 
@@ -79,21 +83,22 @@ export default class SongsService {
    * @param request request payload (body)
    * @returns song_id of updated song
    */
-  async updateSongById(id,request) { 
+  async updateSongById(id,request) {
     const { title, year, genre, performer, duration, albumId } = request
     const query = {
       text : `
         UPDATE songs
         SET title=$1,year=$2,genre=$3,performer=$4,duration=$5,"albumId"=$6
-        WHERE id == $7
-        RETURNING id
+        WHERE song_id = $7
+        RETURNING song_id
       `,
       values : [title,year,genre,performer,duration,albumId,id]
     }  
     const result = await this._pool.query(query);
-    // TODO : ADD ERROR HANDLING
-    
-    return result;
+    const notFound = result.rowCount == 0;
+    if(notFound){
+      throw new NotFoundError("Lagu tidak ditemukan!")
+    }
   }
 
   /**
@@ -104,14 +109,15 @@ export default class SongsService {
   async deleteSong(id) {
     const query = {
       text : `
-        DELETE * FROM songs WHERE id == $1
-        RETURNING id
+        DELETE FROM songs WHERE song_id = $1
+        RETURNING song_id
       `,
       values : [id]
     }
     const result = await this._pool.query(query);
-    // TODO : ADD ERROR HANDLING
-
-    return result;
+    const notFound = result.rowCount == 0;
+    if(notFound){
+      throw new NotFoundError("Lagu tidak ditemukan!")
+    }
   }
 }

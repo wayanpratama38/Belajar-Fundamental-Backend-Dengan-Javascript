@@ -24,7 +24,7 @@ export const mapSongDBToModel = ({
     title,
     year,
     genre,
-    perfomer,
+    performer,
     duration,
     albumId
 }) => ({
@@ -32,7 +32,7 @@ export const mapSongDBToModel = ({
     title,
     year,
     genre,
-    perfomer,
+    performer,
     duration,
     albumId
 })

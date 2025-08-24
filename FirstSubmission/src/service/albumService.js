@@ -1,6 +1,7 @@
 import {Pool} from 'pg';
 import {nanoid} from "nanoid";
 import {mapAlbumDBToModel} from "../utils/utils.js";
+import NotFoundError from '../exceptions/notFoundError.js';
 
 export default class AlbumsService {
     // Private variable
@@ -28,8 +29,6 @@ export default class AlbumsService {
             values : [id,name,year]
         }
         const result = await this._pool.query(query);
-        // TODO : ADD ERROR HANDLING
-
         return result.rows[0].album_id;
     }
 
@@ -47,7 +46,12 @@ export default class AlbumsService {
         };
         const result = await this._pool.query(query);
         const album = result.rows.map(mapAlbumDBToModel)
-        // TODO : ADD ERROR HANDLING
+        // TODO : ADD ERROR HANDLING (NOT TESTED YET)
+        const success = album.filter((album) => album.id === album_id)[0];
+        
+        if(!success) {
+            throw new NotFoundError("Album tidak ditemukan");
+        }
         return album[0];
     }
 
@@ -66,8 +70,12 @@ export default class AlbumsService {
             `,
             values : [name,year,album_id]
         }
-        // TODO : ADD ERROR HANDLING
-        await this._pool.query(query);
+        const result = await this._pool.query(query);
+        // TODO : ADD ERROR HANDLING (NOT TESTED YET)
+        const notFound = result.rowCount == 0;
+        if(notFound) {
+            throw new NotFoundError("Album tidak ditemukan");
+        }
     }
 
     /**
@@ -77,11 +85,14 @@ export default class AlbumsService {
     async deleteAlbumById(album_id) {
         const query = {
             text : `
-                DELETE * FROM albums WHERE album_id = $1
+                DELETE FROM albums WHERE album_id = $1
             `,
             values : [album_id]
         }
-        // TODO : ADD ERROR HANDLING
-        await this._pool.query(query)
+        const result = await this._pool.query(query);
+        const notFound = result.rowCount == 0;
+        if(notFound) {
+            throw new NotFoundError("Album tidak ditemukan");
+        }
     }
 }

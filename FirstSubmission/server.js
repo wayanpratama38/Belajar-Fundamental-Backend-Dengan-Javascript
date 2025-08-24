@@ -1,6 +1,7 @@
 import "dotenv/config"
 import Hapi from "@hapi/hapi";
 import SongPlugin from "./src/api/plugin.js";
+import ClientError from "./src/exceptions/clientError.js";
 
 // Intialize HTTP server
 const init = async () => {
@@ -13,6 +14,21 @@ const init = async () => {
       },
     }
   });
+  
+  // Server extenension preResponse
+  server.ext('onPreResponse',(request,h)=>{
+    const {response} = request;
+
+    if(response instanceof ClientError){
+      const newResponse = h.response({
+        status : 'fail',
+        message : response.message,
+      }).code(response.statusCode);
+      return newResponse;
+    }
+
+    return h.continue;
+  })
 
   // Register custom plugin
   await server.register({
