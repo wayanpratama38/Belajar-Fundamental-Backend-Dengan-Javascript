@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
     "migrate": "node-pg-migrate",
-    "start":"http-server"
+    "start": "http-server"
   },
   "author": "wynprtm",
   "license": "ISC",
@@ -19,10 +19,15 @@
     "nanoid": "^5.1.5",
     "node-pg-migrate": "^8.0.3",
     "nodemon": "^3.1.10",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "qs": "^6.14.0"
   },
   "devDependencies": {
     "dotenv-cli": "^10.0.0",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.32.0",
+    "globals": "^16.3.0",
     "http-server": "^14.1.1"
   }
 }

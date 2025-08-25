@@ -2,6 +2,7 @@ import "dotenv/config"
 import Hapi from "@hapi/hapi";
 import SongPlugin from "./src/api/plugin.js";
 import ClientError from "./src/exceptions/clientError.js";
+import QueryString from "qs";
 
 // Intialize HTTP server
 const init = async () => {
@@ -12,6 +13,10 @@ const init = async () => {
       cors: {
         origin: ['*'],
       },
+    },
+    // Using QueryString for getting request.parameter parsed version
+    query : {
+      parser : (query) => QueryString.parse(query)
     }
   });
   

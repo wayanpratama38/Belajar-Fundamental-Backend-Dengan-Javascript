@@ -33,26 +33,40 @@ export default class AlbumsService {
     }
 
     /**
-     * Service function to get specify album information
+     * Service function to get specify album information including songs with same album_id value
      * @param album_id request paramater  
      * @returns album detail information
      */
     async getAlbumById(album_id){
-        const query = {
+        const albumQuery  = {
             text : `
                 SELECT * FROM albums WHERE album_id = $1
             `,
             values : [album_id]
         };
-        const result = await this._pool.query(query);
-        const album = result.rows.map(mapAlbumDBToModel)
-        // TODO : ADD ERROR HANDLING (NOT TESTED YET)
-        const success = album.filter((album) => album.id === album_id)[0];
+
+        const songQuery = {
+            text : `
+                SELECT * FROM songs WHERE "albumId" = $1 and "albumId" IS NOT NULL
+            `,
+            values : [album_id]
+        };
+        const albumResult = await this._pool.query(albumQuery);
+        const songResult = await this._pool.query(songQuery);
         
-        if(!success) {
+        if(albumResult.rowCount === 0) {
             throw new NotFoundError("Album tidak ditemukan");
         }
-        return album[0];
+        
+        const album = mapAlbumDBToModel(albumResult.rows[0]);
+        const songs = songResult.rows.map((song) => ({
+            id : song.song_id,
+            title : song.title,
+            performer : song.performer
+        }));
+        return {...album,
+            songs,
+        };
     }
 
     /**
@@ -71,7 +85,6 @@ export default class AlbumsService {
             values : [name,year,album_id]
         }
         const result = await this._pool.query(query);
-        // TODO : ADD ERROR HANDLING (NOT TESTED YET)
         const notFound = result.rowCount == 0;
         if(notFound) {
             throw new NotFoundError("Album tidak ditemukan");

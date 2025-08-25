@@ -75,7 +75,8 @@ export default class SongsHandler{
      * }
      */
     async getAllSongs(request,h) {
-        const result = await this._service.getAllSongs();
+        const {title,performer} = request.query;
+        const result = await this._service.getAllSongs(title,performer);
         
         return h.response({
             status : "success",
@@ -117,6 +118,19 @@ export default class SongsHandler{
                 song : result
             }
         }).code(200)
+    }
+
+    async getSongByQuery(request,h) {
+        
+        const {title, performer} = request.query;
+        const result = await this._service.getSongsByQuery(title,performer);
+        return h.response({
+            status : "success",
+            data : {
+                result
+            }
+        })
+
     }
 
     /**

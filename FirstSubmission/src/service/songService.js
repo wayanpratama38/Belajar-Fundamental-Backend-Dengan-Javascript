@@ -44,15 +44,24 @@ export default class SongsService {
 
 
   /**
-   * Service function for getting all the songs in database
-   * @returns all array of song from songs table
+   * Service function for getting all the songs in database including uusing some query parameter
+   * @param {null} [performer=""||null] this paramater is for querying, i do "" or null since if performer is empty it will became undefined, in order to able query i need to make this as a null 
+   * @param {null} [title=""||null]  this paramater is for querying, i do "" or null since if title is empty it will became undefined, in order to able query i need to make this as a null
+   * @returns all array of song from songs table including searching from query parameter
    */
-  async getAllSongs() {
-    const query = await this._pool.query("SELECT * FROM songs");
-    const result = query.rows.map(mapSongDBToModel).map((song)=> {
+  async getAllSongs(title=""||null,performer=""||null) {  
+    const query= {
+      text : `
+        SELECT * FROM songs 
+        WHERE ($1::text IS NULL OR title ILIKE '%' || $1 || '%' ) 
+        AND ($2::text IS NULL OR performer ILIKE '%' || $2 || '%' )
+      `,
+      values : [title,performer]
+    }
+    const result = await this._pool.query(query);
+    return result.rows.map(mapSongDBToModel).map((song)=> {
       return {id : song.id,title : song.title, performer : song.performer}
     });
-    return result;
   }
 
   /**
@@ -68,10 +77,10 @@ export default class SongsService {
       values : [id]
     }
     const result = await this._pool.query(query)
-    // TODO : ADD ERROR HANDLING (NOT TESTED YET!)
+    
     const song = result.rows.map(mapSongDBToModel);
-    const success = song.filter((song_id)=> song_id.id === id)[0];
-    if(!success){
+    const notFound = song.filter((song_id)=> song_id.id === id)[0];
+    if(!notFound){
       throw new NotFoundError("Lagu tidak ditemukan!")
     }
     return song[0];
