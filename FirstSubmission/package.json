@@ -8,7 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
     "migrate": "node-pg-migrate",
-    "start": "http-server"
+    "start": "http-server",
+    "prettier": "prettier --write ."
   },
   "author": "wynprtm",
   "license": "ISC",
@@ -28,6 +29,7 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.32.0",
     "globals": "^16.3.0",
-    "http-server": "^14.1.1"
+    "http-server": "^14.1.1",
+    "prettier": "3.6.2"
   }
 }
