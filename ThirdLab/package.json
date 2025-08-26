@@ -3,7 +3,7 @@
   "scripts": {
     "start": "bun run server.js",
     "dev": "bun --watch server.js",
-    "migrate": "dotenv -e .env -- npx node-pg-migrate",
+    "migrate": "node-pg-migrate",
     "migrate:create": "node-pg-migrate create"
   },
   "module": "server.js",
