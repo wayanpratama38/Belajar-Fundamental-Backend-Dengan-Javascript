@@ -10,6 +10,7 @@
   "type": "module",
   "private": true,
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/bun": "latest",
     "@types/hapi__hapi": "^21.0.0",
     "@types/pg": "^8.15.5"
@@ -19,6 +20,7 @@
   },
   "dependencies": {
     "@hapi/hapi": "^21.4.0",
+    "bcrypt": "^6.0.0",
     "dotenv-cli": "^10.0.0",
     "joi": "^18.0.0",
     "nanoid": "^5.1.5",

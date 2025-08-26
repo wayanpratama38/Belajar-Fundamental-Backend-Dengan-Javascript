@@ -78,4 +78,4 @@ interface BooksValidatorInterface {
 }
 
 
-export type { Book, BookPayload, BookQuery, BookParams, AddBook, InputBook, BooksValidatorInterface };
+export type { Book, BookPayload, BookQuery, BookParams, InputBook, BooksValidatorInterface };
