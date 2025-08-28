@@ -7,3 +7,8 @@ export interface BookHandler {
     putBookByIdHandler: Lifecycle.Method;
     deleteBookByIdHandler: Lifecycle.Method;
 }
+
+export interface UserHandler {
+    postUserHandler : Lifecycle.Method;
+    getUserById : Lifecycle.Method;
+}

@@ -1,3 +1,5 @@
+import type { Register } from "./booksInterface";
+
 /**
  * Interface yang membentuk buku
  * @property {string} id - ID unik untuk buku, terdiri dari 16 karakter.
@@ -77,5 +79,8 @@ interface BooksValidatorInterface {
   validatePayload(payload: InputBook | Partial<InputBook>): void
 }
 
+interface UsersValidatorInterface {
+  validatePayload(payload : Register) : void
+}
 
-export type { Book, BookPayload, BookQuery, BookParams, InputBook, BooksValidatorInterface };
+export type { Book, BookPayload, BookQuery, BookParams, InputBook, BooksValidatorInterface, UsersValidatorInterface };

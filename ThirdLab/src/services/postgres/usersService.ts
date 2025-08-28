@@ -8,7 +8,7 @@ export default class UsersService{
 
     constructor(){
         this._pool = new Pool();
-    }
+    };
 
     async verifyUsername(username : string) {
         const query = {
@@ -22,7 +22,7 @@ export default class UsersService{
             return false;
         }
         return true;
-    }
+    };
 
     async addUser(input : Register) {
         // TODO : Varifikasi username apakah sudah digunakan atau tidak 
@@ -45,5 +45,20 @@ export default class UsersService{
 
         const result = await this._pool.query(query);
         return result.rows[0].id;
-    }
-}
+    };
+
+    async getUserById(userId : string) { 
+        const query = {
+            text : `
+                SELECT * FROM users WHERE id = $1 
+            `,
+            values : [userId]
+        };
+        const result = await this._pool.query(query);
+        const succcess = result.rowCount===0;
+        if(!succcess) {
+           console.log("User not found"); 
+        };
+        return result.rows[0];
+    };
+};
