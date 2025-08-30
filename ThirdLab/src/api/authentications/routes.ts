@@ -1,7 +1,7 @@
 import type { ServerRoute } from "@hapi/hapi";
 import type { AuthenticationHandler } from "../../interface/handlerInterface";
 
-const routes = (handler : AuthenticationHandler ) : ServerRoute[] => [
+export const routes = (handler : AuthenticationHandler ) : ServerRoute[] => [
     {
         method : "POST",
         path : "/authentications",

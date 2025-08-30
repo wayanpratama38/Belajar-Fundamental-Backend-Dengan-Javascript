@@ -7,6 +7,10 @@ import { BooksValidator } from './src/validator/books';
 import { userPlugin } from './src/api/users';
 import UsersService from './src/services/postgres/usersService';
 import { UsersValidator } from './src/validator/users';
+import AuthenticationsService from './src/services/postgres/authenticationsService';
+import { authenticationPlugin} from './src/api/authentications';
+import { AuthenticationValidator } from './src/validator/authentications';
+import { TokenManager } from './src/tokenize/tokenManager';
 
 declare module 'bun' {
   interface ENV {
@@ -18,6 +22,7 @@ declare module 'bun' {
 const init = async () : Promise<void> => {
   const bookService = new BookServices();
   const userService = new UsersService();
+  const authenticationService = new AuthenticationsService();
   const server : Hapi.Server =  Hapi.server({
     port: process.env.PORT,
     host : process.env.HOST,
@@ -29,6 +34,15 @@ const init = async () : Promise<void> => {
   });
 
   await server.register([
+    {
+      plugin : authenticationPlugin,
+      options : {
+        userService : userService,
+        validator : AuthenticationValidator,
+        TokenManager : TokenManager,
+        authService : authenticationService 
+      }
+    },
     {
       plugin : userPlugin,
       options : {

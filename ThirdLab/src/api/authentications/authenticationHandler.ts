@@ -5,13 +5,13 @@ import type { Authentication } from "../../interface/authenticationsInterface";
 import type { HapiJwt } from "@hapi/jwt";
 
 
-interface IAuthenticationValidator{
+export interface IAuthenticationValidator{
     validatePostAuthentication : (payload : Authentication) => void,
     validatePutAuthentication : (payload : string) => void,
     validateDeleteAuthentication : (payload : string) => void
 }
 
-interface ITokenManager { 
+export interface ITokenManager { 
     generateAccessToken : (payload : HapiJwt.Payload) => string,
     generateRefreshToken : (payload : HapiJwt.Payload) => string,
     verifyRefreshToken : (refreshToken : string) => any,
