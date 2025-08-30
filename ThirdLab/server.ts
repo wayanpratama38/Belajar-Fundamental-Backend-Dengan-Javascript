@@ -2,7 +2,7 @@
 
 import Hapi from '@hapi/hapi';
 import BookServices from './src/services/postgres/booksService';
-import bookPlugin from "./src/api/notes/index"
+import bookPlugin from "./src/api/books/index"
 import { BooksValidator } from './src/validator/books';
 import { userPlugin } from './src/api/users';
 import UsersService from './src/services/postgres/usersService';

@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
 import type { Book, InputBook } from "../../interface/interface";
-import { updateBookById } from "../../api/notes/handler";
+import { updateBookById } from "../../api/books/handler";
 
 
 export default class BookServices { 

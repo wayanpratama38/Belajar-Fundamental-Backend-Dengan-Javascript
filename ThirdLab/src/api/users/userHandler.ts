@@ -17,11 +17,7 @@ export class UsersHandler {
     }
 
     async postUserHandler(request : Request, h : ResponseToolkit) : Promise<ResponseObject>  {
-        console.log("TEST POST /users HANDLER")
         const payload = request.payload as Register;
-        // const {username,password,fullname} = payload;
-        // this._validator.validatePayload(payload);
-        console.log(payload);
         const userId = await this._service.addUser(payload);
         
         return h.response({
