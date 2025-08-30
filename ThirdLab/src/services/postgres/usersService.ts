@@ -9,6 +9,28 @@ export default class UsersService{
         this._pool = new Pool();
     };
 
+    async verifyUserCredentials(username : string, password : string) { 
+        const query = {
+            text : `
+                SELECT id,password WHERE username = $1
+            `,
+            values : [username]
+        }
+        const result = await this._pool.query(query);
+        if(!result.rows.length) {
+            throw new Error("Kredensial yang diberikan salah!")
+        }
+
+        const { id, hashedPassword } = result.rows[0]; 
+        const isMatch = await Bun.password.verify(hashedPassword,password);
+
+        if(!isMatch){
+            throw new Error("Password yang diberikan salah")
+        }
+
+        return id;
+    }
+
     async verifyUsername(username : string) {
         const query = {
             text : `
