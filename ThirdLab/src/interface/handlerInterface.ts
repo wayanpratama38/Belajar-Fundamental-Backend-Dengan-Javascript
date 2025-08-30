@@ -10,5 +10,5 @@ export interface BookHandler {
 
 export interface UserHandler {
     postUserHandler : Lifecycle.Method;
-    getUserById : Lifecycle.Method;
+    getUserByIdHandler : Lifecycle.Method;
 }

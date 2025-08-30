@@ -1,7 +1,7 @@
 import type { ServerRoute } from "@hapi/hapi";
-import type { UserHandler } from "../../interface/handlerInterface";
+import type { UsersHandler } from "./userHandler";
 
-export const routes = (handler : UserHandler) : ServerRoute[] => [
+export const routes = (handler : UsersHandler) : ServerRoute[] => [
     {
         method : "POST",
         path : "/users",
@@ -10,6 +10,6 @@ export const routes = (handler : UserHandler) : ServerRoute[] => [
     {
         method : "GET",
         path : "/users/{id}",
-        handler : handler.getUserById
+        handler : handler.getUserByIdHandler
     }
 ]

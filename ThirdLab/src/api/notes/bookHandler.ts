@@ -1,8 +1,7 @@
 import type { Request, ResponseObject, ResponseToolkit } from "@hapi/hapi";
 import BookServices from "../../services/postgres/booksService";
 import type { BooksValidatorInterface, InputBook } from "../../interface/interface";
-import { BooksValidator } from "../../validator/books";
-import { nanoid } from "nanoid";
+
 
 export default class BookHandler {
   private _service: BookServices
@@ -25,7 +24,7 @@ export default class BookHandler {
       this._validator.validatePayload(request.payload as InputBook)
       
       const { name = "untitled", year, author, summary, publisher, pageCount, readPage, reading } = request.payload as InputBook;
-
+      console.log(name,year,author)
       const newBook = await this._service.addBook({    
         name,
         year,

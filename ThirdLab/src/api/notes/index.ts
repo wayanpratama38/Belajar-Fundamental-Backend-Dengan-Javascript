@@ -3,8 +3,9 @@ import type {Server, Plugin} from "@hapi/hapi";
 import BookHandler from "./bookHandler";
 import routes from "./routes";
 import type { BooksValidatorInterface } from "../../interface/interface";
+import type BooksService from "../../services/postgres/booksService";
 interface BooksPluginOptions {
-    service : BookServices,
+    service : BooksService,
     validator : BooksValidatorInterface
 }
 

@@ -1,4 +1,4 @@
-import type { ResponseObject,Request, ResponseToolkit } from "@hapi/hapi";
+import type { Request, ResponseObject, ResponseToolkit } from "@hapi/hapi";
 import type { UsersValidatorInterface } from "../../interface/interface";
 import type UsersService from "../../services/postgres/usersService";
 import type { Register } from "../../interface/booksInterface";
@@ -17,9 +17,12 @@ export class UsersHandler {
     }
 
     async postUserHandler(request : Request, h : ResponseToolkit) : Promise<ResponseObject>  {
-        this._validator.validatePayload(request.payload as Register);
-        const registerInput = request.payload as Register
-        const userId = await this._service.addUser(registerInput);
+        console.log("TEST POST /users HANDLER")
+        const payload = request.payload as Register;
+        // const {username,password,fullname} = payload;
+        // this._validator.validatePayload(payload);
+        console.log(payload);
+        const userId = await this._service.addUser(payload);
         
         return h.response({
             status : 'success',

@@ -80,7 +80,7 @@ interface BooksValidatorInterface {
 }
 
 interface UsersValidatorInterface {
-  validatePayload(payload : Register) : void
+  validatePayload(payload : Register | Partial<Register>) : void
 }
 
 export type { Book, BookPayload, BookQuery, BookParams, InputBook, BooksValidatorInterface, UsersValidatorInterface };

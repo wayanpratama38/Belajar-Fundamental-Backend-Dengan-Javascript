@@ -1,7 +1,6 @@
 import { Pool } from 'pg';
 import type { Register } from '../../interface/booksInterface';
 import { nanoid } from 'nanoid';
-import  bycrypt from 'bcrypt';
 
 export default class UsersService{
     private _pool : Pool;
@@ -19,12 +18,13 @@ export default class UsersService{
         }
         const result = await this._pool.query(query);
         if(result.rowCount==0){
-            return false;
+            return true;
         }
-        return true;
+        return false;
     };
 
     async addUser(input : Register) {
+        console.log("ADD USER SERVICE")
         // TODO : Varifikasi username apakah sudah digunakan atau tidak 
         const {username, password, fullname} = input
         const duplicateUsername = await this.verifyUsername(username);
@@ -34,7 +34,10 @@ export default class UsersService{
         
         // TODO : Bila verifikasi lolos, maka masukkan user baru ke database
         const id = `user-${nanoid(16)}`;
-        const hashedPassword = await bycrypt.hash(password,10); 
+        const hashedPassword = await Bun.password.hash(password,{
+            algorithm : "bcrypt",
+            cost : 10
+        }); 
         
         const query = {
             text : `
@@ -42,8 +45,8 @@ export default class UsersService{
             `,
             values : [id,username,hashedPassword,fullname]
         };
-
         const result = await this._pool.query(query);
+        console.log(result)
         return result.rows[0].id;
     };
 
