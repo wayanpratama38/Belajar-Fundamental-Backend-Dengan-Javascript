@@ -1,3 +1,4 @@
+import type { Authentication } from "./authenticationsInterface";
 import type { Register } from "./booksInterface";
 
 /**
@@ -83,4 +84,8 @@ interface UsersValidatorInterface {
   validatePayload(payload : Register | Partial<Register>) : void
 }
 
-export type { Book, BookPayload, BookQuery, BookParams, InputBook, BooksValidatorInterface, UsersValidatorInterface };
+interface PostValidatorInterface {
+  validatePostAuthentication(payload : Authentication | Partial<Authentication>) : void
+}
+
+export type { Book, BookPayload, BookQuery, BookParams, InputBook, BooksValidatorInterface, PostValidatorInterface , UsersValidatorInterface };
