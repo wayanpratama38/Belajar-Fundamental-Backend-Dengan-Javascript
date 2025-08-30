@@ -1,5 +1,5 @@
 import type { Authentication } from "../../interface/authenticationsInterface";
-import { PostAuthenticationSchema } from "./schema";
+import { DeleteAuthenticationSchema, PostAuthenticationSchema, PutAuthenticationSchema } from "./schema";
 
 
 export const AuthenticationValidator = {
@@ -11,14 +11,14 @@ export const AuthenticationValidator = {
     },
 
     validatePutAuthentication : (payload : string) => {
-        const result = PostAuthenticationSchema.validate(payload);
+        const result = PutAuthenticationSchema.validate(payload);
         if(result.error){
             throw new Error(result.error.message);
         }
     },
 
     validateDeleteAuthentication : (payload : string) => {
-        const result = PostAuthenticationSchema.validate(payload);
+        const result = DeleteAuthenticationSchema.validate(payload);
         if(result.error){
             throw new Error(result.error.message);
         }

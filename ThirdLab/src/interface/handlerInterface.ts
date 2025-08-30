@@ -12,3 +12,9 @@ export interface UserHandler {
     postUserHandler : Lifecycle.Method;
     getUserByIdHandler : Lifecycle.Method;
 }
+
+export interface AuthenticationHandler { 
+    postAuthenticationHandler : Lifecycle.Method,
+    putAuthenticationHandler : Lifecycle.Method,
+    deleteAuthenticationHandler : Lifecycle.Method
+}
