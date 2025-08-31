@@ -3,6 +3,7 @@ import type UsersService from "../../services/postgres/usersService";
 import type { Request, ResponseObject, ResponseToolkit } from "@hapi/hapi";
 import type { Authentication } from "../../interface/authenticationsInterface";
 import type { HapiJwt } from "@hapi/jwt";
+import { TokenManager } from "../../tokenize/tokenManager";
 
 
 export interface IAuthenticationValidator{
@@ -27,7 +28,7 @@ export default class AuthenticationHandler {
         this._authService = authService;
         this._userService = userService;
         this._validator = validator;
-        this._tokenManager = tokenManager;
+        this._tokenManager = TokenManager;
 
         this.postAuthenticationHandler = this.postAuthenticationHandler.bind(this);
         this.putAuthenticationHandler = this.putAuthenticationHandler.bind(this);
@@ -36,7 +37,8 @@ export default class AuthenticationHandler {
     }
 
     async postAuthenticationHandler(request : Request, h : ResponseToolkit) : Promise<ResponseObject> { 
-        this._validator.validatePostAuthentication(request.payload as Authentication);
+        // this._validator.validatePostAuthentication(request.payload as Authentication);
+        console.log(request.payload);
 
         const { password, username } = request.payload as Authentication;
         const id = await this._userService.verifyUserCredentials(username,password);

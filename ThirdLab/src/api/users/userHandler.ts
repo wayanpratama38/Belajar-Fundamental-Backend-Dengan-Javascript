@@ -17,9 +17,9 @@ export class UsersHandler {
     }
 
     async postUserHandler(request : Request, h : ResponseToolkit) : Promise<ResponseObject>  {
-        const payload = request.payload as Register;
-        const userId = await this._service.addUser(payload);
+        console.log("POST USER HANDLER",request.payload as Register);
         
+        const userId = await this._service.addUser(request.payload as Register);
         return h.response({
             status : 'success',
             message : 'User berhasil ditambahkan',

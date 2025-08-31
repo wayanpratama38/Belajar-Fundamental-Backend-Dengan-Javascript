@@ -12,17 +12,19 @@ export default class UsersService{
     async verifyUserCredentials(username : string, password : string) { 
         const query = {
             text : `
-                SELECT id,password WHERE username = $1
+            SELECT id,password FROM users WHERE username = $1
             `,
             values : [username]
         }
         const result = await this._pool.query(query);
+        console.log(result.rows[0].password,result.rows[0].password.length);
         if(!result.rows.length) {
             throw new Error("Kredensial yang diberikan salah!")
         }
 
-        const { id, hashedPassword } = result.rows[0]; 
-        const isMatch = await Bun.password.verify(hashedPassword,password);
+        const { id, password : hashedPassword } = result.rows[0]; 
+        const isMatch = await Bun.password.verify(password,hashedPassword,'bcrypt');
+        console.log("ISMATCH",isMatch)
 
         if(!isMatch){
             throw new Error("Password yang diberikan salah")
@@ -46,20 +48,16 @@ export default class UsersService{
     };
 
     async addUser(input : Register) {
-        console.log("ADD USER SERVICE")
-        // TODO : Varifikasi username apakah sudah digunakan atau tidak 
+        
         const {username, password, fullname} = input
         const duplicateUsername = await this.verifyUsername(username);
         if(!duplicateUsername) {
             console.log("Username already exist!");
         }
+
         
-        // TODO : Bila verifikasi lolos, maka masukkan user baru ke database
         const id = `user-${nanoid(16)}`;
-        const hashedPassword = await Bun.password.hash(password,{
-            algorithm : "bcrypt",
-            cost : 10
-        }); 
+        const hashedPassword = await Bun.password.hash(password,'bcrypt')
         
         const query = {
             text : `
@@ -68,7 +66,6 @@ export default class UsersService{
             values : [id,username,hashedPassword,fullname]
         };
         const result = await this._pool.query(query);
-        console.log(result)
         return result.rows[0].id;
     };
 
