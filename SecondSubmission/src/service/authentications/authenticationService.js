@@ -1,4 +1,5 @@
 import {Pool} from 'pg'
+import InvariantError from '../../exceptions/invariantError';
 
 export default class AuthenticationService {
     _pool;
@@ -28,7 +29,7 @@ export default class AuthenticationService {
         }
         const result = await this._pool.query(query);
         if(result.rowCount==0){
-            console.log("TOKEN TIDAK DITEMUKAN")
+            throw new InvariantError("Token tidak ditemukan")
         }
     }
 

@@ -1,6 +1,7 @@
 import  { Pool } from 'pg';
 import bcrypt from 'bcrypt';
 import { nanoid } from 'nanoid';
+import InvariantError from '../exceptions/invariantError.js';
 
 export default class UserService {
     _pool;
@@ -20,16 +21,14 @@ export default class UserService {
         const verifyResult = await this._pool.query(verifyQuery);
         
         if(verifyResult.rowCount==0){
-            // TODO : handle if username not found
-            console.log("USERNAME GAADA")
+            throw new InvariantError("Username Tidak ditemukan!")
         }
 
         // VERIFY PASSWORD
         const {id,password : hashedPassword} = verifyResult.rows[0]; 
         const verifyPassword = bcrypt.compare(password,hashedPassword);
         if(!verifyPassword) {
-            // TODO : handle if password wrong
-            console.log("KREDENSIAL SALAH!")
+            throw new InvariantError("Password yang dimasukkan salah!")
         }
 
         return id;
@@ -54,8 +53,7 @@ export default class UserService {
         const duplicateUsername = await this.verifyUsername(username);
         
         if(!duplicateUsername) {
-            console.log("Duplicated Username");
-            return;
+            throw new InvariantError("Username sudah digunakan")
         }
         const id = `user-${nanoid(16)}`
         const hashedPassword = await bcrypt.hash(password,10);
