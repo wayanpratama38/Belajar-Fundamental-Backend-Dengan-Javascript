@@ -4,6 +4,8 @@ import SongPlugin from './src/api/plugin.js';
 import ClientError from './src/exceptions/clientError.js';
 import QueryString from 'qs';
 import UserPlugin  from './src/api/users/plugin.js';
+import AuthenticationPlugin from './src/api/authentications/plugin.js';
+import JWT from '@hapi/jwt';
 
 // Intialize HTTP server
 const init = async () => {
@@ -40,6 +42,12 @@ const init = async () => {
 
   // Register custom plugin
   await server.register([
+    {
+      plugin : JWT
+    },
+    {
+      plugin : AuthenticationPlugin
+    },
     {
       plugin: SongPlugin,
     },

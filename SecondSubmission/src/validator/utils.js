@@ -1,4 +1,4 @@
-import InvariantError from "../exceptions/invariantError";
+import InvariantError from "../exceptions/invariantError.js";
 
 export const getValidateResult = (schema, payload) => {
   return schema.validate(payload);

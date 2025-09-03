@@ -9,6 +9,32 @@ export default class UserService {
         this._pool = new Pool();
     }
 
+    async verifyUserCredential(username,password){
+        // VERIFY USERNAME
+        const verifyQuery = {
+            text :`
+                SELECT id,password FROM users WHERE username = $1
+            `,
+            values : [username]
+        }
+        const verifyResult = await this._pool.query(verifyQuery);
+        
+        if(verifyResult.rowCount==0){
+            // TODO : handle if username not found
+            console.log("USERNAME GAADA")
+        }
+
+        // VERIFY PASSWORD
+        const {id,password : hashedPassword} = verifyResult.rows[0]; 
+        const verifyPassword = bcrypt.compare(password,hashedPassword);
+        if(!verifyPassword) {
+            // TODO : handle if password wrong
+            console.log("KREDENSIAL SALAH!")
+        }
+
+        return id;
+    }
+
     async verifyUsername(username){
         const query = {
             text : `
