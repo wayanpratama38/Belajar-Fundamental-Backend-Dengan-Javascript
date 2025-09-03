@@ -3,6 +3,7 @@ import Hapi from '@hapi/hapi';
 import SongPlugin from './src/api/plugin.js';
 import ClientError from './src/exceptions/clientError.js';
 import QueryString from 'qs';
+import UserPlugin  from './src/api/users/plugin.js';
 
 // Intialize HTTP server
 const init = async () => {
@@ -38,9 +39,14 @@ const init = async () => {
   });
 
   // Register custom plugin
-  await server.register({
-    plugin: SongPlugin,
-  });
+  await server.register([
+    {
+      plugin: SongPlugin,
+    },
+    {
+      plugin : UserPlugin
+    }
+  ]);
 
   // Start server
   await server.start();

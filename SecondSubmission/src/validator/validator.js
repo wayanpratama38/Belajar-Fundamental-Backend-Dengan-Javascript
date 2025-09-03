@@ -1,15 +1,6 @@
 import { albumSchema, songSchema } from './schema.js';
-import InvariantError from '../exceptions/invariantError.js';
+import { getValidateResult,checkValidateResult } from './utils.js';
 
-function getValidateResult(schema, payload) {
-  return schema.validate(payload);
-}
-
-function checkValidateResult(validationResult) {
-  if (validationResult.error) {
-    throw new InvariantError(validationResult.error.message);
-  }
-}
 
 export const Validator = {
   validateAlbumPayload: (payload) => {
