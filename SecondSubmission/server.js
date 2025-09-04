@@ -6,6 +6,7 @@ import QueryString from 'qs';
 import UserPlugin  from './src/api/users/plugin.js';
 import AuthenticationPlugin from './src/api/authentications/plugin.js';
 import JWT from '@hapi/jwt';
+import PlaylistPlugin from './src/api/playlists/plugin.js';
 
 // Intialize HTTP server
 const init = async () => {
@@ -40,13 +41,33 @@ const init = async () => {
     return h.continue;
   });
 
+  await server.register({
+    plugin : JWT
+  })
+
+  server.auth.strategy('musicapp_jwt','jwt',{
+    keys : process.env.ACCESS_TOKEN_KEY,
+    verify : {
+      aud : false,
+      iss : false,
+      sub : false,
+      maxAgeSec : process.env.ACESS_TOKEN_AGE
+    },
+    validate : (artifacts) => ({
+      isValid : true,
+      credentials : {
+        id : artifacts.decoded.payload
+      }
+    })
+  })
+
   // Register custom plugin
   await server.register([
     {
-      plugin : JWT
+      plugin : AuthenticationPlugin
     },
     {
-      plugin : AuthenticationPlugin
+      plugin : PlaylistPlugin
     },
     {
       plugin: SongPlugin,

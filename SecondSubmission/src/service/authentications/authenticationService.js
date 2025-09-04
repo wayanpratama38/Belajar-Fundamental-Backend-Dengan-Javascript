@@ -1,5 +1,5 @@
 import {Pool} from 'pg'
-import InvariantError from '../../exceptions/invariantError';
+import InvariantError from '../../exceptions/invariantError.js';
 
 export default class AuthenticationService {
     _pool;
