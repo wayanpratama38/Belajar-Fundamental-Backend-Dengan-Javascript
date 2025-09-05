@@ -3,7 +3,7 @@ import Hapi from '@hapi/hapi';
 import SongPlugin from './src/api/plugin.js';
 import ClientError from './src/exceptions/clientError.js';
 import QueryString from 'qs';
-import UserPlugin  from './src/api/users/plugin.js';
+import UserPlugin from './src/api/users/plugin.js';
 import AuthenticationPlugin from './src/api/authentications/plugin.js';
 import JWT from '@hapi/jwt';
 import PlaylistPlugin from './src/api/playlists/plugin.js';
@@ -43,42 +43,42 @@ const init = async () => {
   });
 
   await server.register({
-    plugin : JWT
-  })
+    plugin: JWT,
+  });
 
-  server.auth.strategy('musicapp_jwt','jwt',{
-    keys : process.env.ACCESS_TOKEN_KEY,
-    verify : {
-      aud : false,
-      iss : false,
-      sub : false,
-      maxAgeSec : process.env.ACCESS_TOKEN_AGE
+  server.auth.strategy('musicapp_jwt', 'jwt', {
+    keys: process.env.ACCESS_TOKEN_KEY,
+    verify: {
+      aud: false,
+      iss: false,
+      sub: false,
+      maxAgeSec: process.env.ACCESS_TOKEN_AGE,
     },
-    validate : (artifacts) => ({
-      isValid : true,
-      credentials : {
-        id : artifacts.decoded.payload
-      }
-    })
-  })
+    validate: (artifacts) => ({
+      isValid: true,
+      credentials: {
+        id: artifacts.decoded.payload,
+      },
+    }),
+  });
 
   // Register custom plugin
   await server.register([
     {
-      plugin : AuthenticationPlugin
+      plugin: AuthenticationPlugin,
     },
     {
-      plugin : PlaylistPlugin
+      plugin: PlaylistPlugin,
     },
     {
       plugin: SongPlugin,
     },
     {
-      plugin : UserPlugin
+      plugin: UserPlugin,
     },
     {
-      plugin : CollaborationPlugin
-    }
+      plugin: CollaborationPlugin,
+    },
   ]);
 
   // Start server

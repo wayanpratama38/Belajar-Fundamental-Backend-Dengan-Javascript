@@ -1,6 +1,5 @@
 import { albumSchema, songSchema } from './schema.js';
-import { getValidateResult,checkValidateResult } from './utils.js';
-
+import { getValidateResult, checkValidateResult } from './utils.js';
 
 export const Validator = {
   validateAlbumPayload: (payload) => {

@@ -9,20 +9,20 @@ export const shorthands = undefined;
  * @returns {Promise<void> | void}
  */
 export const up = (pgm) => {
-    pgm.createTable('playlists',{
-        id : {
-            type : 'varchar',
-            primaryKey: true
-        },
-        name : {
-            type : 'varchar',
-            notNull : true
-        },
-        owner : {
-            type : 'varchar',
-            references :'users(id)'
-        }
-    });
+  pgm.createTable('playlists', {
+    id: {
+      type: 'varchar',
+      primaryKey: true,
+    },
+    name: {
+      type: 'varchar',
+      notNull: true,
+    },
+    owner: {
+      type: 'varchar',
+      references: 'users(id)',
+    },
+  });
 };
 
 /**
@@ -31,4 +31,3 @@ export const up = (pgm) => {
  * @returns {Promise<void> | void}
  */
 export const down = (pgm) => {};
-

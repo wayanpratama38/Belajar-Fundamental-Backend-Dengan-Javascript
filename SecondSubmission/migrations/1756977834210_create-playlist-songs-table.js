@@ -9,20 +9,20 @@ export const shorthands = undefined;
  * @returns {Promise<void> | void}
  */
 export const up = (pgm) => {
-    pgm.createTable("playlist_songs",{
-        id : {
-            type : 'varchar',
-            primaryKey : true
-        },
-        playlist_id : {
-            type : 'varchar',
-            references : 'playlists(id)'
-        },
-        song_id : {
-            type : 'varchar',
-            references : 'songs(song_id)'
-        }
-    })
+  pgm.createTable('playlist_songs', {
+    id: {
+      type: 'varchar',
+      primaryKey: true,
+    },
+    playlist_id: {
+      type: 'varchar',
+      references: 'playlists(id)',
+    },
+    song_id: {
+      type: 'varchar',
+      references: 'songs(song_id)',
+    },
+  });
 };
 
 /**

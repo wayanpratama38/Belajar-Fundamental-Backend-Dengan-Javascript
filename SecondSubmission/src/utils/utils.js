@@ -33,7 +33,8 @@ export const mapSongDBToModel = ({
   albumId,
 });
 
-
 export const payloadToStringConverter = (payloadId) => {
-  return Object.values(payloadId).filter(v => typeof v === 'string').join("")
-}
+  return Object.values(payloadId)
+    .filter((v) => typeof v === 'string')
+    .join('');
+};
