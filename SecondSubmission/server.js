@@ -7,6 +7,7 @@ import UserPlugin  from './src/api/users/plugin.js';
 import AuthenticationPlugin from './src/api/authentications/plugin.js';
 import JWT from '@hapi/jwt';
 import PlaylistPlugin from './src/api/playlists/plugin.js';
+import CollaborationPlugin from './src/api/collaborations/plugin.js';
 
 // Intialize HTTP server
 const init = async () => {
@@ -51,7 +52,7 @@ const init = async () => {
       aud : false,
       iss : false,
       sub : false,
-      maxAgeSec : process.env.ACESS_TOKEN_AGE
+      maxAgeSec : process.env.ACCESS_TOKEN_AGE
     },
     validate : (artifacts) => ({
       isValid : true,
@@ -74,6 +75,9 @@ const init = async () => {
     },
     {
       plugin : UserPlugin
+    },
+    {
+      plugin : CollaborationPlugin
     }
   ]);
 

@@ -2,20 +2,23 @@ import {Pool} from 'pg';
 import {nanoid} from 'nanoid';
 import InvariantError from '../../exceptions/invariantError.js';
 import AuthorizationError from '../../exceptions/authorizationError.js';
+import CollaborationService from '../collaborations/collaborationService.js';
 
 export default class PlaylistService {
     _pool;
+    _collaborationService;
 
     constructor(){
         this._pool = new Pool();
+        this._collaborationService = new CollaborationService();
     }
 
-    async verifyPlaylistOwner(ownerId){
+    async verifyPlaylistOwner(playlistId,ownerId){
         const query = {
             text : `
-                SELECT * FROM playlists WHERE owner = $1
+                SELECT owner FROM playlists WHERE id = $1
             `,
-            values : [ownerId]
+            values : [playlistId]
         }
 
         const result = await this._pool.query(query);
@@ -28,6 +31,14 @@ export default class PlaylistService {
 
         if(playlist.owner !== ownerId){
             throw new AuthorizationError('Tidak memiliki akses kepada playlist ini!');
+        }
+    }
+
+    async verifyPlaylistAccess(playlistId,userId){
+        try{
+            await this.verifyPlaylistOwner(playlistId,userId);
+        }catch{
+            await this._collaborationService.verifyCollaborator(playlistId,userId);
         }
     }
 
