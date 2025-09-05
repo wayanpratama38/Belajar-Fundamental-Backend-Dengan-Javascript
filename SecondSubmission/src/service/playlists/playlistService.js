@@ -68,4 +68,70 @@ export default class PlaylistService {
         }
         await this._pool.query(query);
     }
+
+    // service for POST/playlists/{id}/songs
+    async addSongIntoPlaylist(playlistId,songId){
+        const id = `playlist_songs-${nanoid(16)}`
+
+        const query = {
+            text : `
+                INSERT INTO playlist_songs
+                VALUES($1,$2,$3)
+                RETURNING id
+            `,
+            values : [id,playlistId,songId]
+        }
+        const result = await this._pool.query(query);
+        return result.rows[0];
+    }
+
+    // service for GET/playlists/{id}/songs
+    async getSongInPlaylist(playlistId){
+        
+        const query = {
+            text : `
+                SELECT
+                p.id AS playlist_id,
+                p.name AS playlist_name,
+                p.owner AS playlist_owner,
+                s.song_id AS song_id,
+                s.title AS song_title,
+                s.performer AS song_performer
+                FROM playlists p
+                LEFT JOIN playlist_songs ps ON p.id = ps.playlist_id
+                LEFT JOIN songs s ON ps.song_id = s.song_id
+                WHERE p.id = $1
+            `,
+            values : [playlistId]
+        }
+
+        const result = await this._pool.query(query);
+        
+        const playlist = {
+            id : result.rows[0].playlist_id,
+            name : result.rows[0].playlist_name,
+            username : result.rows[0].playlist_owner,
+            songs : result.rows
+                .filter(row => row.song_id)
+                .map(row => ({
+                    id : row.song_id,
+                    title : row.song_title,
+                    performer : row.song_performer
+                }))
+        }
+        console.log(playlist);
+        return playlist;
+    }
+
+    // service for DELETE/playlists/{id}/songs
+    async deleteSongInPlaylist(songId,playlistId){
+        const query = {
+            text : `
+                DELETE FROM playlist_songs
+                WHERE song_id = $1 AND playlist_id = $2
+            `,
+            values : [songId,playlistId]
+        }
+        await this._pool.query(query);
+    }
 }
