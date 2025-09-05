@@ -1,14 +1,15 @@
 import PlaylistService from "../../service/playlists/playlistService.js";
 import { payloadToStringConverter } from "../../utils/utils.js";
+import { PlaylistValidator } from "../../validator/playlists/validator.js";
 
 
 export default class PlaylistHandler{
     _service;
-    // _validator;
+    _validator;
 
     constructor(){
         this._service = new PlaylistService();
-        
+        this._validator = PlaylistValidator;
         this.postNewPlaylist = this.postNewPlaylist.bind(this);
         this.deletePlaylist = this.deletePlaylist.bind(this);
         this.getPlaylists = this.getPlaylists.bind(this);
@@ -19,8 +20,8 @@ export default class PlaylistHandler{
 
     // POST/playlists
     async postNewPlaylist(request,h){
-        //TODO : validate
-
+        // validate
+        this._validator.validatePostPlaylist(request.payload);
         // request payload and auth
         const {name} = request.payload;
         const {id} = request.auth.credentials;
@@ -38,8 +39,6 @@ export default class PlaylistHandler{
 
     // GET/playlists
     async getPlaylists(request,h){
-        // TODO : validate
-
         // request auth
         const {id} = request.auth.credentials
         const ownerId = payloadToStringConverter(id);
@@ -53,9 +52,7 @@ export default class PlaylistHandler{
     }
 
     // DELETE/playlists/{id}
-    async deletePlaylist(request,h){
-        //TODO : validate
-        
+    async deletePlaylist(request,h){  
         // get request payload and auth
         const { id : playlistId } = request.params
         console.log(playlistId);
@@ -72,8 +69,8 @@ export default class PlaylistHandler{
 
     // POST/playlists/{id}/songs
     async postSongIntoPlaylist(request,h){
-        //TODO : validate
-
+        // validate
+        this._validator.validatePostSongIntoPlaylist(request.payload);
         // get request payload and auth
         const {id} = request.auth.credentials
         const {id : playlistId} = request.params
@@ -91,8 +88,6 @@ export default class PlaylistHandler{
 
     // GET/playlists/{id}/songs
     async getAllSongInPlaylist(request,h){
-        //TODO : validate
-        console.log("TEST")
         // get request payload and auth
         const {id} = request.auth.credentials
         const {id : playlistId} = request.params
@@ -110,8 +105,6 @@ export default class PlaylistHandler{
 
     // DELETE/playlists/{id}/songs
     async deleteSongInPlaylist(request,h){
-        //TODO : validate
-
         // get auth and params
         const {id} = request.auth.credentials
         const {id : playlistId} = request.params

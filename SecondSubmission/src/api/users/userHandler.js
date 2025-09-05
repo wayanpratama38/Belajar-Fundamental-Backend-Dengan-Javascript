@@ -13,7 +13,7 @@ export default class UserHandler{
     }
 
     async addUser(request,h) {
-        // TODO : ADD VALIDATOR
+        // validate
         this._validator.validateRegisterPayload(request.payload);
         const {username,password,fullname} = request.payload;
         const userId = await this._service.addUser(username,password,fullname);

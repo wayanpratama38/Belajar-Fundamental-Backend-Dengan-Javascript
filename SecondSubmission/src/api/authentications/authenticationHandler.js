@@ -24,6 +24,7 @@ export default class AuthenticationHandler {
 
     // post
     async postAuthentication(request,h){
+        // validate
         this._validator.validatePostAuthentication(request.payload);
 
         //verify user
@@ -48,6 +49,7 @@ export default class AuthenticationHandler {
 
     // put 
     async putAuthentication(request,h){
+        // validate
         this._validator.validatePutAuthentication(request.payload);
 
         const {refreshToken} = request.payload;
@@ -68,7 +70,7 @@ export default class AuthenticationHandler {
     
     //delete
     async deleteAuthentication(request,h){
-        
+        // validate
         this._validator.validateDeleteAuthentication(request.payload);
 
         const {refreshToken} = request.payload;
