@@ -3,6 +3,6 @@ import ClientError from './clientError.js';
 export default class AuthorizationError extends ClientError {
   constructor(message) {
     super(message, 403);
-    this.name = 'Authorization Error';
+    this.name = 'AuthorizationError';
   }
 }

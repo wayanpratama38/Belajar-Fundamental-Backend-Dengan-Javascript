@@ -15,7 +15,7 @@ export default class PlaylistHandler {
     this.getAllSongInPlaylist = this.getAllSongInPlaylist.bind(this);
     this.postSongIntoPlaylist = this.postSongIntoPlaylist.bind(this);
     this.deleteSongInPlaylist = this.deleteSongInPlaylist.bind(this);
-    this.getPlayistActivities = this.getPlayistActivities.bind(this);
+    this.getPlaylistActivities = this.getPlaylistActivities.bind(this);
   }
 
   // POST/playlists
@@ -31,9 +31,9 @@ export default class PlaylistHandler {
     return h
       .response({
         status: 'success',
-        data: {
-          result,
-        },
+        data : {
+          playlistId : result
+        }
       })
       .code(201);
   }
@@ -50,8 +50,7 @@ export default class PlaylistHandler {
         data: {
           playlists: result,
         },
-      })
-      .code(200);
+      }).code(200);
   }
 
   // DELETE/playlists/{id}
@@ -79,6 +78,7 @@ export default class PlaylistHandler {
     const { id: playlistId } = request.params;
     const { songId } = request.payload;
     const ownerId = payloadToStringConverter(id);
+    console.log('Tes',songId,ownerId,playlistId)
     await this._service.verifyPlaylistAccess(playlistId, ownerId);
     await this._service.addSongIntoPlaylist(playlistId, songId);
     await this._service.addPlaylistActivities(
@@ -102,6 +102,7 @@ export default class PlaylistHandler {
     const { id } = request.auth.credentials;
     const { id: playlistId } = request.params;
     const ownerId = payloadToStringConverter(id);
+    console.log(ownerId,playlistId);
     await this._service.verifyPlaylistAccess(playlistId, ownerId);
     const result = await this._service.getSongInPlaylist(playlistId);
 
@@ -138,8 +139,11 @@ export default class PlaylistHandler {
   }
 
   //GET /playlist/{id}/activities
-    async getPlayistActivities(request,h){
+    async getPlaylistActivities(request,h){
         const {id : playlistId} = request.params
+        const {id} = request.auth.credentials
+        const ownerId = payloadToStringConverter(id);
+        await this._service.verifyPlaylistAccess(playlistId,ownerId)
         const result = await this._service.getPlaylistActivities(playlistId)
         
         return h.response({

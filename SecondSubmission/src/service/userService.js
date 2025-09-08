@@ -1,13 +1,29 @@
 import { Pool } from 'pg';
 import bcrypt from 'bcrypt';
 import { nanoid } from 'nanoid';
-import InvariantError from '../exceptions/invariantError.js';
+import AuthorizationError from '../exceptions/authorizationError.js';
+import ClientError from '../exceptions/clientError.js';
+import AuthenticationError from '../exceptions/authenticationError.js';
+import NotFoundError from '../exceptions/notFoundError.js';
 
 export default class UserService {
   _pool;
 
   constructor() {
     this._pool = new Pool();
+  }
+
+  async verifyUserId(userId){
+    const query = {
+      text : `
+        SELECT * FROM users WHERE id = $1
+      `,
+      values : [userId]
+    }
+    const result = await this._pool.query(query);
+    if(result.rowCount === 0){
+      throw new NotFoundError('User tidak ditemukan')
+    }
   }
 
   async verifyUserCredential(username, password) {
@@ -19,16 +35,16 @@ export default class UserService {
       values: [username],
     };
     const verifyResult = await this._pool.query(verifyQuery);
-
+    
     if (verifyResult.rowCount == 0) {
-      throw new InvariantError('Username Tidak ditemukan!');
+      throw new AuthenticationError('Username Tidak ditemukan!');
     }
 
     // VERIFY PASSWORD
     const { id, password: hashedPassword } = verifyResult.rows[0];
-    const verifyPassword = bcrypt.compare(password, hashedPassword);
+    const verifyPassword = await bcrypt.compare(password, hashedPassword);
     if (!verifyPassword) {
-      throw new InvariantError('Password yang dimasukkan salah!');
+      throw new AuthenticationError('Password yang dimasukkan salah!');
     }
 
     return id;
@@ -53,7 +69,7 @@ export default class UserService {
     const duplicateUsername = await this.verifyUsername(username);
 
     if (!duplicateUsername) {
-      throw new InvariantError('Username sudah digunakan');
+      throw new ClientError('Username sudah digunakan');
     }
     const id = `user-${nanoid(16)}`;
     const hashedPassword = await bcrypt.hash(password, 10);

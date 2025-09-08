@@ -28,7 +28,6 @@ export default class AuthenticationHandler {
     //verify user
     const { username, password } = request.payload;
     const id = await this._userService.verifyUserCredential(username, password);
-
     // generate token
     const accessToken = this._tokenManager.generateToken(id);
     const refreshToken = this._tokenManager.generateRefreshToken(id);

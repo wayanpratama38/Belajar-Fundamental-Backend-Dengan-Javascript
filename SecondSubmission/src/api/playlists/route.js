@@ -54,7 +54,7 @@ const route = [
   {
     method: 'GET',
     path: '/playlists/{id}/activities',
-    handler: playlistHandler.getPlayistActivities,
+    handler: playlistHandler.getPlaylistActivities,
     options: {
       auth: 'musicapp_jwt',
     },
