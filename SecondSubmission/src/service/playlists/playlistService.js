@@ -227,7 +227,6 @@ export default class PlaylistService {
   }
 
   // service for GET/playlists/{id}/activities
-  //nama user,dan title musiknya
   async getPlaylistActivities(playlistId) {
     const query = {
       text: `
