@@ -1,13 +1,16 @@
+import CollaborationService from '../../service/collaborations/collaborationService.js';
 import PlaylistService from '../../service/playlists/playlistService.js';
 import { payloadToStringConverter } from '../../utils/utils.js';
 import { PlaylistValidator } from '../../validator/playlists/validator.js';
 
 export default class PlaylistHandler {
   _service;
+  _collaborationService;
   _validator;
 
   constructor() {
     this._service = new PlaylistService();
+    this._collaborationService = new CollaborationService();
     this._validator = PlaylistValidator;
     this.postNewPlaylist = this.postNewPlaylist.bind(this);
     this.deletePlaylist = this.deletePlaylist.bind(this);
@@ -31,9 +34,9 @@ export default class PlaylistHandler {
     return h
       .response({
         status: 'success',
-        data : {
-          playlistId : result
-        }
+        data: {
+          playlistId: result,
+        },
       })
       .code(201);
   }
@@ -50,7 +53,8 @@ export default class PlaylistHandler {
         data: {
           playlists: result,
         },
-      }).code(200);
+      })
+      .code(200);
   }
 
   // DELETE/playlists/{id}
@@ -78,7 +82,6 @@ export default class PlaylistHandler {
     const { id: playlistId } = request.params;
     const { songId } = request.payload;
     const ownerId = payloadToStringConverter(id);
-    console.log('Tes',songId,ownerId,playlistId)
     await this._service.verifyPlaylistAccess(playlistId, ownerId);
     await this._service.addSongIntoPlaylist(playlistId, songId);
     await this._service.addPlaylistActivities(
@@ -117,7 +120,7 @@ export default class PlaylistHandler {
 
   // DELETE/playlists/{id}/songs
   async deleteSongInPlaylist(request, h) {
-    // payload 
+    // payload
     this._validator.validateDeleteSongIntoPlaylist(request.payload);
     // get auth and params
     const { id } = request.auth.credentials;
@@ -140,18 +143,20 @@ export default class PlaylistHandler {
   }
 
   //GET /playlist/{id}/activities
-    async getPlaylistActivities(request,h){
-        const {id : playlistId} = request.params
-        const {id} = request.auth.credentials
-        const ownerId = payloadToStringConverter(id);
-        await this._service.verifyPlaylistAccess(playlistId,ownerId)
-        const result = await this._service.getPlaylistActivities(playlistId)
-        
-        return h.response({
-            status : 'success',
-            data : {
-              ...result
-            }
-        }).code(200);
-    }
+  async getPlaylistActivities(request, h) {
+    const { id: playlistId } = request.params;
+    const { id } = request.auth.credentials;
+    const ownerId = payloadToStringConverter(id);
+    await this._service.verifyPlaylistAccess(playlistId, ownerId);
+    const result = await this._service.getPlaylistActivities(playlistId);
+
+    return h
+      .response({
+        status: 'success',
+        data: {
+          ...result,
+        },
+      })
+      .code(200);
+  }
 }

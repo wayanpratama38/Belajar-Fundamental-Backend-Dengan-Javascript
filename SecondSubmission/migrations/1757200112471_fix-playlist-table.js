@@ -1,18 +1,12 @@
 /**
- * @type {import('node-pg-migrate').ColumnDefinitions | undefined}
- */
-export const shorthands = undefined;
-
-/**
  * @param pgm {import('node-pg-migrate').MigrationBuilder}
  * @param run {() => void | undefined}
  * @returns {Promise<void> | void}
  */
 export const up = (pgm) => {
+  pgm.dropTable('playlists', { ifExists: true, cascade: true });
 
-    pgm.dropTable('playlists',{ifExists:true,cascade:true});
-
-    pgm.createTable('playlists', {
+  pgm.createTable('playlists', {
     id: {
       type: 'varchar',
       primaryKey: true,

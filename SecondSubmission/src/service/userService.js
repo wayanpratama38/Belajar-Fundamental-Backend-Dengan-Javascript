@@ -13,16 +13,16 @@ export default class UserService {
     this._pool = new Pool();
   }
 
-  async verifyUserId(userId){
+  async verifyUserId(userId) {
     const query = {
-      text : `
+      text: `
         SELECT * FROM users WHERE id = $1
       `,
-      values : [userId]
-    }
+      values: [userId],
+    };
     const result = await this._pool.query(query);
-    if(result.rowCount === 0){
-      throw new NotFoundError('User tidak ditemukan')
+    if (result.rowCount === 0) {
+      throw new NotFoundError('User tidak ditemukan');
     }
   }
 
@@ -35,7 +35,7 @@ export default class UserService {
       values: [username],
     };
     const verifyResult = await this._pool.query(verifyQuery);
-    
+
     if (verifyResult.rowCount == 0) {
       throw new AuthenticationError('Username Tidak ditemukan!');
     }

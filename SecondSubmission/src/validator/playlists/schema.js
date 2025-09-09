@@ -9,5 +9,5 @@ export const postSongIntoPlaylist = Joi.object({
 });
 
 export const deleteSongIntoPlaylist = Joi.object({
-  songId : Joi.string().required()
-})
+  songId: Joi.string().required(),
+});

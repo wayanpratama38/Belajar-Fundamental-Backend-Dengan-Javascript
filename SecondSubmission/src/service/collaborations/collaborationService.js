@@ -23,47 +23,40 @@ export default class CollaborationService {
       values: [id, playlistId, userId],
     };
     const result = await this._pool.query(query);
-    return result.rows[0];
+    return result.rows[0].id;
   }
 
   // service for DELETE /collaborations
-  async deleteCollaborationService(playlistId, userId) {
+  async deleteCollaborationService(playlistId, userId, userCredential) {
+    const checkOwnershipQuery = {
+      text: `
+        SELECT 
+        c.user_id,
+        p.owner
+        FROM collaborations c
+        LEFT JOIN playlists p ON c.playlist_id = p.id
+        WHERE c.playlist_id = $1
+      `,
+      values: [playlistId],
+    };
+    const checkOwnershipResult = await this._pool.query(checkOwnershipQuery);
+    if (checkOwnershipResult.rowCount !== 0) {
+      if (userId === userCredential) {
+        throw new AuthorizationError('Tidak memiliki akses');
+      }
+    }
     const query = {
       text: `
                 DELETE FROM collaborations
-                WHERE user_id = $1 AND playlist_id = $2 
+                WHERE playlist_id = $1 AND user_id = $2
             `,
-      values: [userId, playlistId],
+      values: [playlistId, userId],
     };
     await this._pool.query(query);
   }
 
   // verify collaborator
   async verifyCollaborator(playlistId, userId) {
-    // const userQuery = {
-    //   text : `
-    //     SELECT * FROM users WHERE id = $1
-    //   `,
-    //   values : [userId]
-    // }
-
-    // const userResult = await this._pool.query(userQuery);
-    // if(userResult.rowCount === 0 ){
-    //   throw new NotFoundError("User tidak ditemukan")
-    // }
-
-    // const playlistQuery = {
-    //   text : `
-    //     SELECT * FROM playlists WHERE id = $1
-    //   `,
-    //   values : [playlistId]
-    // }
-
-    // const playlistResult = await this._pool.query(playlistQuery);
-    // if(playlistResult.rowCount === 0 ){
-    //   throw new NotFoundError("Playlist tidak ditemukan")
-    // }
-    
     const query = {
       text: `
                 SELECT 1 FROM collaborations WHERE playlist_id = $1 AND user_id = $2
@@ -71,8 +64,8 @@ export default class CollaborationService {
       values: [playlistId, userId],
     };
     const result = await this._pool.query(query);
-    if(result.rowCount === 0 ) {
-      throw new AuthorizationError('Bukan Kolaborator')
+    if (result.rowCount === 0) {
+      throw new AuthorizationError('Bukan Kolaborator');
     }
   }
 }

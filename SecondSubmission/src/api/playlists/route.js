@@ -59,7 +59,6 @@ const route = [
       auth: 'musicapp_jwt',
     },
   },
-
 ];
 
 export default route;
