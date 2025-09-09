@@ -102,7 +102,6 @@ export default class PlaylistHandler {
     const { id } = request.auth.credentials;
     const { id: playlistId } = request.params;
     const ownerId = payloadToStringConverter(id);
-    console.log(ownerId,playlistId);
     await this._service.verifyPlaylistAccess(playlistId, ownerId);
     const result = await this._service.getSongInPlaylist(playlistId);
 
@@ -118,6 +117,8 @@ export default class PlaylistHandler {
 
   // DELETE/playlists/{id}/songs
   async deleteSongInPlaylist(request, h) {
+    // payload 
+    this._validator.validateDeleteSongIntoPlaylist(request.payload);
     // get auth and params
     const { id } = request.auth.credentials;
     const { id: playlistId } = request.params;
@@ -149,7 +150,7 @@ export default class PlaylistHandler {
         return h.response({
             status : 'success',
             data : {
-                result
+              ...result
             }
         }).code(200);
     }

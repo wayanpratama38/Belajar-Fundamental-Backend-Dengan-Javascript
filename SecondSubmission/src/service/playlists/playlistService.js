@@ -21,15 +21,14 @@ export default class PlaylistService {
             `,
       values: [playlistId],
     };
-    console.log("VERIFY PLAYLIST OWNER",playlistId)
+    console.log("VERIFY PLAYLIST",playlistId)
     const result = await this._pool.query(query);
-    console.log(result)
     if (result.rowCount === 0) {
-      throw new ForbiddenError('Tidak ditemukan playlistnya');
+      throw new NotFoundError('Tidak ditemukan playlistnya');
     }
 
     const playlist = result.rows[0];  
-    console.log("verify owner in playlist",playlist,"userId payload",ownerId);
+    console.log("VERIFY PLAYLIST OWNER",playlist,"userId payload",ownerId);
     console.log("SAMA ATAU TIDAK",playlist.owner!== ownerId);
     if (playlist.owner !== ownerId) {
       throw new AuthorizationError('Tidak memiliki akses kepada playlist ini!');
@@ -42,6 +41,8 @@ export default class PlaylistService {
 
     } catch(error) {
       if(error instanceof AuthorizationError){
+        throw error
+      } else if(error instanceof NotFoundError){
         throw error
       }
       await this._collaborationService.verifyCollaborator(playlistId, userId);
@@ -97,6 +98,15 @@ export default class PlaylistService {
             `,
       values: [playlistId],
     };
+
+    const playlistSongQuery = {
+      text : `
+        DELETE FROM playlist_songs WHERE playlist_id = $1
+      `,
+      values : [playlistId]
+    }
+
+    await this._pool.query(playlistSongQuery);
     await this._pool.query(query);
   }
 
@@ -110,7 +120,6 @@ export default class PlaylistService {
       values : [songId]
     }
     const songNotFound = ((await this._pool.query(checkSongQuery)).rowCount == 0);
-    console.log(songNotFound);
     if(songNotFound){
       throw new NotFoundError("Musik tidak ditemukan")
     }
@@ -159,8 +168,8 @@ export default class PlaylistService {
         .filter(r => r.song_id !== null)
         .map(r=>({
           id :r.song_id,
-          title:r.song_title,
-          perfomer:r.song_perfomer
+          title:r.title,
+          performer:r.performer
         })),
     };
     console.log(playlist.songs);
@@ -169,6 +178,16 @@ export default class PlaylistService {
 
   // service for DELETE/playlists/{id}/songs
   async deleteSongInPlaylist(songId, playlistId) {
+    const checkSongQuery = {
+      text :`
+        SELECT * FROM songs WHERE song_id = $1
+      `,
+      values : [songId]
+    }
+    const songNotFound = ((await this._pool.query(checkSongQuery)).rowCount == 0);
+    if(songNotFound){
+      throw new NotFoundError("Musik tidak ditemukan")
+    }
     const query = {
       text: `
                 DELETE FROM playlist_songs
@@ -182,6 +201,7 @@ export default class PlaylistService {
   // service for GET/playlists/{id}/activities
   //nama user,dan title musiknya  
     async getPlaylistActivities(playlistId) {
+        console.log(playlistId);
         const query = {
             text: `
                 SELECT 
@@ -200,13 +220,14 @@ export default class PlaylistService {
             values : [playlistId]
         };
         const result = await this._pool.query(query);
+        console.log(result);
         if(result.rowCount===0){
           throw new NotFoundError("Aktivitas tidak ditemukan");
         }
         const activitiesResponse = {
             playlistId : playlistId,
             activities : result.rows
-                .filter(row => row.playlist_id)
+                .filter(row => row != null)
                 .map((row)=>({
                     username : row.username,
                     title : row.title,
