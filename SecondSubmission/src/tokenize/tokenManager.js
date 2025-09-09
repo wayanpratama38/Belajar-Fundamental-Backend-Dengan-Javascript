@@ -1,4 +1,5 @@
 import JWT from '@hapi/jwt';
+import InternalServerError from '../exceptions/internalServerError.js';
 
 export const tokenManager = {
   generateToken: (payload) =>
@@ -11,8 +12,8 @@ export const tokenManager = {
       JWT.token.verifySignature(artifact, process.env.REFRESH_TOKEN_KEY);
       const { payload } = artifact.decoded;
       return payload;
-    } catch (error) {
-      console.log('ERROR KETIKA VERIFIKASI REFRESH TOKEN!');
+    } catch {
+      throw new InternalServerError("Terjadi kesalahan di sisi server");
     }
   },
 };

@@ -1,7 +1,5 @@
 import { nanoid } from 'nanoid';
 import { Pool } from 'pg';
-import NotFoundError from '../../exceptions/notFoundError.js';
-import AuthenticationError from '../../exceptions/authenticationError.js';
 import AuthorizationError from '../../exceptions/authorizationError.js';
 
 export default class CollaborationService {

@@ -1,12 +1,15 @@
-import globals from 'globals';
-import { defineConfig } from 'eslint/config';
+import globals from "globals";
+import eslintPluginJs from "@eslint/js";
 
-export default defineConfig([
+export default [
+  eslintPluginJs.configs.recommended,
   {
-    files: ['**/*.{js,mjs,cjs}'],
-    languageOptions: { globals: globals.node },
+    files: ["**/*.{js,mjs,cjs}"],
+    languageOptions: {
+      globals: globals.node,
+    },
     rules: {
-      'no-console': 'off',
+      "no-console": "off",
     },
   },
-]);
+];

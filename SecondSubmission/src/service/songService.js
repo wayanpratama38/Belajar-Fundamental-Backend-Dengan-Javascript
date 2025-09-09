@@ -36,16 +36,16 @@ export default class SongsService {
 
   /**
    * Service function for getting all the songs in database including uusing some query parameter
-   * @param {null} [performer=""||null] this paramater is for querying, i do "" or null since if performer is empty it will became undefined, in order to able query i need to make this as a null
-   * @param {null} [title=""||null]  this paramater is for querying, i do "" or null since if title is empty it will became undefined, in order to able query i need to make this as a null
+   * @param {null} [performer=""] this paramater is for querying, i do "" or null since if performer is empty it will became undefined, in order to able query i need to make this as a null
+   * @param {null} [title=""]  this paramater is for querying, i do "" or null since if title is empty it will became undefined, in order to able query i need to make this as a null
    * @returns all array of song from songs table including searching from query parameter
    */
-  async getAllSongs(title = '' || null, performer = '' || null) {
+  async getAllSongs(title = '', performer = '') {
     const query = {
       text: `
         SELECT * FROM songs 
-        WHERE ($1::text IS NULL OR title ILIKE '%' || $1 || '%' ) 
-        AND ($2::text IS NULL OR performer ILIKE '%' || $2 || '%' )
+        WHERE (NULLIF($1, '') IS NULL OR title ILIKE '%' || $1 || '%' ) 
+        AND (NULLIF($2, '') IS NULL OR performer ILIKE '%' || $2 || '%' )
       `,
       values: [title, performer],
     };

@@ -1,7 +1,6 @@
 import { Pool } from 'pg';
 import bcrypt from 'bcrypt';
 import { nanoid } from 'nanoid';
-import AuthorizationError from '../exceptions/authorizationError.js';
 import ClientError from '../exceptions/clientError.js';
 import AuthenticationError from '../exceptions/authenticationError.js';
 import NotFoundError from '../exceptions/notFoundError.js';

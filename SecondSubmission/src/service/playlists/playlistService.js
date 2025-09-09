@@ -3,7 +3,6 @@ import { nanoid } from 'nanoid';
 import AuthorizationError from '../../exceptions/authorizationError.js';
 import CollaborationService from '../collaborations/collaborationService.js';
 import NotFoundError from '../../exceptions/notFoundError.js';
-import ForbiddenError from '../../exceptions/forbiddenError.js';
 
 export default class PlaylistService {
   _pool;
