@@ -18,3 +18,7 @@ export interface AuthenticationHandler {
     putAuthenticationHandler : Lifecycle.Method,
     deleteAuthenticationHandler : Lifecycle.Method
 }
+
+export interface ExportHandler { 
+    postExportHandler : Lifecycle.Method
+}

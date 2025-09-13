@@ -12,7 +12,10 @@ import { authenticationPlugin} from './src/api/authentications';
 import { AuthenticationValidator } from './src/validator/authentications';
 import { TokenManager } from './src/tokenize/tokenManager';
 import * as JWT from '@hapi/jwt';
-
+import ExportHandler from './src/api/exports/exportHandler';
+import { ProducerService } from './src/services/rabbitmq/producerService';
+import { ExportPlugin } from './src/api/exports';
+import { ExportValidator } from './src/validator/exports';
 declare module 'bun' {
   interface ENV {
     PORT : number,
@@ -24,6 +27,8 @@ const init = async () : Promise<void> => {
   const bookService = new BookServices();
   const userService = new UsersService();
   const authenticationService = new AuthenticationsService();
+  const producerService = ProducerService;
+
   const server : Hapi.Server =  Hapi.server({
     port: process.env.PORT,
     host : process.env.HOST,
@@ -78,6 +83,13 @@ const init = async () : Promise<void> => {
       options : {
         service : bookService,
         validator : BooksValidator
+      }
+    },
+    {
+      plugin : ExportPlugin,
+      options : {
+        service : producerService,
+        validator : ExportValidator
       }
     }
   ])
