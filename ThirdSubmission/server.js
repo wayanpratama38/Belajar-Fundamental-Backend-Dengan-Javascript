@@ -8,6 +8,7 @@ import AuthenticationPlugin from './src/api/authentications/plugin.js';
 import JWT from '@hapi/jwt';
 import PlaylistPlugin from './src/api/playlists/plugin.js';
 import CollaborationPlugin from './src/api/collaborations/plugin.js';
+import ExportPlugin from './src/api/exports/plugin.js';
 
 // Intialize HTTP server
 const init = async () => {
@@ -79,6 +80,9 @@ const init = async () => {
     {
       plugin: CollaborationPlugin,
     },
+    {
+      plugin : ExportPlugin
+    }
   ]);
 
   // Start server
