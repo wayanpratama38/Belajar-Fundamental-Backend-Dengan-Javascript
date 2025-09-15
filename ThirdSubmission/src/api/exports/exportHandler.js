@@ -12,6 +12,8 @@ export default class ExportHandler {
         this._service =  ExportService;
         this._playlistService = new PlaylistService();
         this._validator = ExportValidator;
+
+        this.postExportHandler = this.postExportHandler.bind(this);
     }
 
     // POST /exports/playlist/{id}
