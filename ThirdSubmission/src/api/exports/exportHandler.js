@@ -33,6 +33,6 @@ export default class ExportHandler {
         return h.response({
             status : 'success',
             message : 'Permintaan Anda sedang kami proses'
-        })
+        }).code(201)
     }
 }
