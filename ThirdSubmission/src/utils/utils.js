@@ -4,10 +4,11 @@
  * @param {*} param {album_id,name,year} - from database
  * @returns return {id : album_id, name, year} - to object, for model usage
  */
-export const mapAlbumDBToModel = ({ album_id, name, year }) => ({
+export const mapAlbumDBToModel = ({ album_id, name, year, cover }) => ({
   id: album_id,
   name,
   year,
+  coverUrl : cover
 });
 
 /**

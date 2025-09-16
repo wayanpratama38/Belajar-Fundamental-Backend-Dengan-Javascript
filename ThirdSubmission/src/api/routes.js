@@ -28,6 +28,19 @@ const routes = () => [
     path: '/albums/{id}',
     handler: albumHandler.deleteAlbum,
   },
+  {
+    method : 'POST',
+    path : '/albums/{id}/cover',
+    handler : albumHandler.postAlbumCover,
+    options : {
+      payload : {
+        allow : 'multipart/form-data',
+        multipart : true,
+        output : 'stream',
+        maxBytes : 512000
+      }
+    }
+  },
   // Song routes
   {
     method: 'POST',

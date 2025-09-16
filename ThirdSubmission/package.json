@@ -15,6 +15,8 @@
   "author": "wynprtm",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.888.0",
+    "@aws-sdk/s3-request-presigner": "^3.888.0",
     "@hapi/hapi": "^21.4.3",
     "@hapi/jwt": "^3.2.1",
     "amqplib": "^0.10.9",

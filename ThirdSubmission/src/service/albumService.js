@@ -106,4 +106,18 @@ export default class AlbumsService {
       throw new NotFoundError('Album tidak ditemukan');
     }
   }
+
+  // service for POST/albums/{id}/covers
+  async postAlbumCover(albumId,coverUrl){
+    const query = {
+      text : `
+        UPDATE albums
+        SET cover=$1
+        WHERE album_id = $2
+      `,
+      values : [coverUrl,albumId]
+    }
+    await this._pool.query(query);
+  }
 }
+

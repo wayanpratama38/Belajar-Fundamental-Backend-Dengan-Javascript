@@ -1,14 +1,17 @@
 import AlbumsService from '../service/albumService.js';
+import StorageService from '../service/S3/storageService.js';
 import { Validator } from '../validator/validator.js';
 
 export default class AlbumsHandler {
   // Private variables
   _service;
+  _storageService;
   _validator;
 
   constructor() {
     this._service = new AlbumsService();
     this._validator = Validator;
+    this._storageService = new StorageService();
     this.addAlbum = this.addAlbum.bind(this);
     this.getAlbum = this.getAlbum.bind(this);
     this.updateAlbum = this.updateAlbum.bind(this);
@@ -122,5 +125,23 @@ export default class AlbumsHandler {
         message: 'Successfully delete album',
       })
       .code(200);
+  }
+
+  async postAlbumCover(request,h){  
+    // check request payload
+    const { data } = request.payload;
+    const { albumId } = request.params; 
+    this._validator.validateUploadAlbumCoverPayload(data.hapi.headers);
+
+    // send to aws s3 to get url
+    const coverUrl = await this._storageService.writeFile(data, data.hapi);
+
+    // post to dabtase
+    await this._service.postAlbumCover(albumId,coverUrl);
+    
+    return h.response({
+      status : 'success',
+      message : 'Sampul berhasil diunggah'
+    }).code(201);
   }
 }
