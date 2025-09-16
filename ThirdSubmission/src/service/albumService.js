@@ -2,6 +2,7 @@ import { Pool } from 'pg';
 import { nanoid } from 'nanoid';
 import { mapAlbumDBToModel } from '../utils/utils.js';
 import NotFoundError from '../exceptions/notFoundError.js';
+import ClientError from '../exceptions/clientError.js';
 
 export default class AlbumsService {
   // Private variable
@@ -118,6 +119,79 @@ export default class AlbumsService {
       values : [coverUrl,albumId]
     }
     await this._pool.query(query);
+  }
+
+  // service for POST/albums/{id}/likes
+  async postLikeAlbum(albumId,userId){
+    // create id
+    const likeId = `album-like-${nanoid(16)}`
+    const query = {
+      text : `
+        INSERT INTO user_album_likes
+        values($1,$2,$3)
+        RETURNING id
+      `,
+      values : [likeId,userId,albumId]
+    }
+
+    await this._pool.query(query);
+  }
+
+  // service for DELETE/albums/{id}/likes
+  async deleteLikeAlbum(albumId,userId){
+    const query = {
+      text : `
+        DELETE FROM user_album_likes
+        WHERE album_id = $1 AND user_id = $2
+      `,
+      values : [albumId,userId]
+    }
+    await this._pool.query(query);
+  } 
+
+  // service for GET/albums/{id}/likes
+  async getLikeAlbum(albumId){
+    const query = {
+      text : `
+        SELECT COUNT(*) FROM user_album_likes 
+        WHERE album_id = $1
+      `,
+      values : [albumId]
+    }
+    const result = await this._pool.query(query);
+    return result.rows[0];
+  }
+
+  // check already like album or not
+  async checkUserLikeAlbum(albumId,userId){
+    const checkLikeQuery = {
+      text : `
+        SELECT id FROM user_album_likes 
+        WHERE user_id = $1 AND album_id = $2 
+      `,
+      values : [userId,albumId]
+    }
+
+    const checkLike = await this._pool.query(checkLikeQuery);
+    if(checkLike.rowCount != 0 ){
+      throw new ClientError('Sudah di like!')
+    } 
+  }
+
+  // check if album available
+  async checkAlbumAvailable(albumId){
+    const query = {
+      text : `
+        SELECT * FROM user_album_likes 
+        WHERE album_id = $1
+      `,
+      values : [albumId]
+    }
+
+    const result = await this._pool.query(query);
+    if(result.rowCount===0){
+      throw new NotFoundError('Album tidak ditemukan')
+    }
   }
 }
 

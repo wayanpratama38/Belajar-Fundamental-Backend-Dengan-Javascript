@@ -1,5 +1,6 @@
 import AlbumsService from '../service/albumService.js';
 import StorageService from '../service/S3/storageService.js';
+import { payloadToStringConverter } from '../utils/utils.js';
 import { Validator } from '../validator/validator.js';
 
 export default class AlbumsHandler {
@@ -16,6 +17,11 @@ export default class AlbumsHandler {
     this.getAlbum = this.getAlbum.bind(this);
     this.updateAlbum = this.updateAlbum.bind(this);
     this.deleteAlbum = this.deleteAlbum.bind(this);
+
+    this.postAlbumCover =this.postAlbumCover.bind(this);
+    this.postUserLikeAlbumHandler = this.postUserLikeAlbumHandler.bind(this);
+    this.deleteUserLikeAlbumHandler = this.deleteUserLikeAlbumHandler.bind(this);
+    this.getUserLikeAlbumHandler = this.getUserLikeAlbumHandler.bind(this);
   }
 
   /**
@@ -143,5 +149,58 @@ export default class AlbumsHandler {
       status : 'success',
       message : 'Sampul berhasil diunggah'
     }).code(201);
+  }
+
+  // handler POST/albums/{id}/likes
+  async postUserLikeAlbumHandler(request,h){
+    // get album id and credentials
+    const {id} = request.auth.credentials
+    const userId = payloadToStringConverter(id);
+    const {albumId} = request.params;
+  
+    // check if already like
+    await this._service.checkUserLikeAlbum(albumId,userId);
+
+    // post into database
+    await this._service.postLikeAlbum(albumId,userId);
+
+    // return 201
+    return h.response({
+      status : 'success',
+      message : 'Berhasil like album ini!'
+    }).code(201)
+  }
+
+  // handler DELETE/albums/{id}/likes
+  async deleteUserLikeAlbumHandler(request,h){
+    // get credentials
+    const {id} = request.auth.credentials
+    const userId = payloadToStringConverter(id);
+    const {albumId} = request.params
+
+    // check album availability
+    await this._service.checkAlbumAvailable(albumId);
+
+    // check delete album like
+    await this._service.deleteLikeAlbum(albumId,userId);
+
+    return h.response({
+      status : 'success',
+      message : 'Berhasil membatalkan like'
+    }).code(200)
+  };
+
+  // handler GET/albums/{id}/likes
+  async getUserLikeAlbumHandler(request,h){
+    const {albumId} = request.params
+
+    const like = await this._service.getLikeAlbum(albumId);
+
+    return h.response({
+      status : 'success',
+      data : {
+        like : like
+      }
+    }).code(200)
   }
 }
