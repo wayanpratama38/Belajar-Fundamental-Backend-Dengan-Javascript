@@ -194,13 +194,13 @@ export default class AlbumsHandler {
   async getUserLikeAlbumHandler(request,h){
     const {albumId} = request.params
 
-    const like = await this._service.getLikeAlbum(albumId);
+    const {data,source} = await this._service.getLikeAlbum(albumId);
 
     return h.response({
       status : 'success',
       data : {
-        like : like
+        like : data
       }
-    }).code(200)
+    }).code(200).header(source);
   }
 }

@@ -3,13 +3,16 @@ import { nanoid } from 'nanoid';
 import { mapAlbumDBToModel } from '../utils/utils.js';
 import NotFoundError from '../exceptions/notFoundError.js';
 import ClientError from '../exceptions/clientError.js';
+import CacheService from './redis/cacheService.js';
 
 export default class AlbumsService {
   // Private variable
   _pool;
+  _cacheService;
 
   constructor() {
     this._pool = new Pool();
+    this._cacheService = new CacheService();
   }
 
   /**
@@ -135,6 +138,7 @@ export default class AlbumsService {
     }
 
     await this._pool.query(query);
+    await this._cacheService.delete(`album-like:${albumId}`)
   }
 
   // service for DELETE/albums/{id}/likes
@@ -147,19 +151,33 @@ export default class AlbumsService {
       values : [albumId,userId]
     }
     await this._pool.query(query);
+    await this._cacheService.delete(`album-like:${albumId}`)
   } 
 
   // service for GET/albums/{id}/likes
   async getLikeAlbum(albumId){
-    const query = {
-      text : `
-        SELECT COUNT(*) FROM user_album_likes 
-        WHERE album_id = $1
-      `,
-      values : [albumId]
+    try {
+      const result = await this._cacheService.get(`album-like:${albumId}`)
+      return {
+        data : parseInt(JSON.parse(result),10),
+        source : 'cache'
+      };
+    } catch {
+      const query = {
+        text : `
+          SELECT COUNT(*) FROM user_album_likes 
+          WHERE album_id = $1
+        `,
+        values : [albumId]
+      }
+      const result = await this._pool.query(query);
+      await this._cacheService.set(`album-like:${albumId}`,JSON.stringify(result.rows[0]));
+      
+      return {
+        data : result.rows[0].count,
+        source : 'db'
+      };
     }
-    const result = await this._pool.query(query);
-    return result.rows[0];
   }
 
   // check already like album or not
