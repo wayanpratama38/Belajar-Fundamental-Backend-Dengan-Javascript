@@ -11,6 +11,7 @@ import AuthenticationsService from './src/services/postgres/authenticationsServi
 import { authenticationPlugin} from './src/api/authentications';
 import { AuthenticationValidator } from './src/validator/authentications';
 import { TokenManager } from './src/tokenize/tokenManager';
+import * as JWT from '@hapi/jwt';
 
 declare module 'bun' {
   interface ENV {
@@ -32,6 +33,28 @@ const init = async () : Promise<void> => {
       }
     }
   });
+
+  await server.register([
+    {
+      plugin : JWT
+    }
+  ])
+
+  server.auth.strategy('booksapp_jwt',"jwt",{
+    keys : process.env.ACCESS_TOKEN_KEY,
+    verify: {
+      aud : false,
+      iss : false,
+      sub : false,
+      maxAgeSec : process.env.ACCESS_TOKEN_AGE
+    },
+    validate : (artifacts : any) => ({
+      isValid : true,
+      credentials : {
+        id : artifacts.decoded.payload.id,
+      }
+    })
+  })
 
   await server.register([
     {
