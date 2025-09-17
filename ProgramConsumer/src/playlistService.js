@@ -5,10 +5,13 @@ export default class PlaylistService {
 
     constructor(){
         this._pool = new Pool();
+
+        this.getSongInPlaylist = this.getSongInPlaylist.bind(this);
     }
 
     // service for GET/playlists/{id}/songs
     async getSongInPlaylist(playlistId) {
+        
         const query = {
         text: `
             SELECT

@@ -9,11 +9,14 @@ export default class Listener {
     constructor(){
         this._emailService = new EmailService();
         this._playlistService = new PlaylistService();
+
+        this.listen = this.listen.bind(this);
     }
 
     async listen(message){
         try {
             const { playlistId, targetEmail } = JSON.parse(message.content.toString());
+            
             const playlistResult = await this._playlistService.getSongInPlaylist(playlistId);
             const emailResult = await this._emailService.sendMail(targetEmail,JSON.stringify(playlistResult));
             console.log(emailResult); 

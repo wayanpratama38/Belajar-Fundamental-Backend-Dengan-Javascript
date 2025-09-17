@@ -1,9 +1,9 @@
+import 'dotenv/config';
 import * as amqplib from 'amqplib';
 import Listener from "./listener.js";
 
 const init = async() => {
     const listener = new Listener();
-
     const connection = await amqplib.connect(process.env.RABBITMQ_SERVER);
     const channel = await connection.createChannel();
 

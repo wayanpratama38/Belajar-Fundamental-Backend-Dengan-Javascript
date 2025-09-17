@@ -12,6 +12,8 @@ export default class EmailService {
                 pass : process.env.SMTP_PASSWORD
             }
         })
+
+        this.sendMail = this.sendMail.bind(this);
     }
 
     async sendMail(targetEmail,content){
@@ -20,7 +22,7 @@ export default class EmailService {
             to : targetEmail,
             subject : 'Ekspor Playlist',
             text : 'Terlampir hasil ekspor dari playlist',
-            attachment : [
+            attachments : [
                 {
                     filename : 'playlist.json',
                     content
