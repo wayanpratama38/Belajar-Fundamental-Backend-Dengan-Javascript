@@ -8,8 +8,7 @@ export default class CacheService {
     constructor(){
         this._client = redis.createClient({
             socket : {
-                host : process.env.REDIS_SERVER,
-                port : process.env.REDIS_PORT
+                host : process.env.REDIS_SERVER
             }
         })
 
