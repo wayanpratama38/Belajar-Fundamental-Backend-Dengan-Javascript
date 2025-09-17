@@ -133,10 +133,11 @@ export default class AlbumsHandler {
       .code(200);
   }
 
+  // POST/albums/{id}/covers
   async postAlbumCover(request,h){  
     // check request payload
-    const { data } = request.payload;
-    const { albumId } = request.params; 
+    const { cover : data } = request.payload;
+    const { id : albumId } = request.params; 
     this._validator.validateUploadAlbumCoverPayload(data.hapi.headers);
 
     // send to aws s3 to get url
@@ -156,8 +157,11 @@ export default class AlbumsHandler {
     // get album id and credentials
     const {id} = request.auth.credentials
     const userId = payloadToStringConverter(id);
-    const {albumId} = request.params;
-  
+    const {id : albumId} = request.params;
+    
+    // check album availability
+    await this._service.checkAlbumAvailable(albumId);
+
     // check if already like
     await this._service.checkUserLikeAlbum(albumId,userId);
 
@@ -176,10 +180,11 @@ export default class AlbumsHandler {
     // get credentials
     const {id} = request.auth.credentials
     const userId = payloadToStringConverter(id);
-    const {albumId} = request.params
+    const {id : albumId} = request.params
 
     // check album availability
     await this._service.checkAlbumAvailable(albumId);
+
 
     // check delete album like
     await this._service.deleteLikeAlbum(albumId,userId);
@@ -192,15 +197,14 @@ export default class AlbumsHandler {
 
   // handler GET/albums/{id}/likes
   async getUserLikeAlbumHandler(request,h){
-    const {albumId} = request.params
+    const {id : albumId} = request.params
 
     const {data,source} = await this._service.getLikeAlbum(albumId);
-
     return h.response({
       status : 'success',
       data : {
-        like : data
+        likes : data
       }
-    }).code(200).header(source);
+    }).code(200).header('X-Data-Source',source);
   }
 }

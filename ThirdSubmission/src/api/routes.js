@@ -30,7 +30,7 @@ const routes = () => [
   },
   {
     method : 'POST',
-    path : '/albums/{id}/cover',
+    path : '/albums/{id}/covers',
     handler : albumHandler.postAlbumCover,
     options : {
       payload : {

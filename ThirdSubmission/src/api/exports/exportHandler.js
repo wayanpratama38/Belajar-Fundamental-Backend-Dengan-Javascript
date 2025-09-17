@@ -1,5 +1,6 @@
 import  { ExportService }  from "../../service/exports/exportService.js";
 import PlaylistService from "../../service/playlists/playlistService.js";
+import { payloadToStringConverter } from "../../utils/utils.js";
 import { ExportValidator } from "../../validator/exports/validator.js";
 
 
@@ -21,14 +22,14 @@ export default class ExportHandler {
         this._validator.validatePostExportPayload(request.payload);
 
         // Check if this user own this playlist or not
-        const { id : userId } = request.auth.credentials;
-        const playlistId = request.params;
+        const { id  } = request.auth.credentials;
+        const userId = payloadToStringConverter(id);
+        const  {id : playlistId }  = request.params;
         await this._playlistService.verifyPlaylistAccess(playlistId,userId);
-
         // create message and send mail
         const message = {
             playlistId : playlistId,
-            targetEmail : request.payload
+            targetEmail : request.payload.targetEmail
         };
         await this._service.sendMessage('export:playlist',JSON.stringify(message));
 

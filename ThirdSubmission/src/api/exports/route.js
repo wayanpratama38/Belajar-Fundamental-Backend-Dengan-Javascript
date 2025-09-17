@@ -5,7 +5,7 @@ const exportHandler = new ExportHandler();
 export const route = [
     {
         method : 'POST',
-        path : '/exports/playlist/{id}',
+        path : '/export/playlists/{id}',
         handler : exportHandler.postExportHandler,
         options : {
             auth : 'musicapp_jwt'

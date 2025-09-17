@@ -1,5 +1,5 @@
 import * as redis from 'redis';
-import NotFoundError from '../../exceptions/notFoundError';
+import NotFoundError from '../../exceptions/notFoundError.js';
 
 
 export default class CacheService {
@@ -7,7 +7,10 @@ export default class CacheService {
     
     constructor(){
         this._client = redis.createClient({
-            socket : process.env.REDIS_SERVER
+            socket : {
+                host : process.env.REDIS_SERVER,
+                port : process.env.REDIS_PORT
+            }
         })
 
         this._client.on('error', (error) => {

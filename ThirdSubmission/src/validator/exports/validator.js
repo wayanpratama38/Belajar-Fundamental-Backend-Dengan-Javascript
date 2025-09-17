@@ -1,5 +1,5 @@
-import { checkValidateResult, getValidateResult } from "../utils"
-import { postExportSchema } from "./schema"
+import { checkValidateResult, getValidateResult } from "../utils.js"
+import { postExportSchema } from "./schema.js"
 
 export const ExportValidator = {
     validatePostExportPayload : (payload) => {

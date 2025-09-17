@@ -171,10 +171,11 @@ export default class AlbumsService {
         values : [albumId]
       }
       const result = await this._pool.query(query);
-      await this._cacheService.set(`album-like:${albumId}`,JSON.stringify(result.rows[0]));
+      await this._cacheService.set(`album-like:${albumId}`,JSON.stringify(result.rows[0].count));
+      
       
       return {
-        data : result.rows[0].count,
+        data : parseInt(result.rows[0].count,10),
         source : 'db'
       };
     }
@@ -200,7 +201,7 @@ export default class AlbumsService {
   async checkAlbumAvailable(albumId){
     const query = {
       text : `
-        SELECT * FROM user_album_likes 
+        SELECT * FROM albums 
         WHERE album_id = $1
       `,
       values : [albumId]
