@@ -33,16 +33,17 @@ export default class PlaylistService {
 
         const result = await this._pool.query(query);
         const playlist = {
-        id: result.rows[0].playlist_id,
-        name: result.rows[0].playlist_name,
-        username: result.rows[0].username,
-        songs: result.rows
-            .filter((r) => r.song_id !== null)
-            .map((r) => ({
-            id: r.song_id,
-            title: r.title,
-            performer: r.performer,
-            })),
+        playlist : {
+            id: result.rows[0].playlist_id,
+            name: result.rows[0].playlist_name,
+            songs: result.rows
+                .filter((r) => r.song_id !== null)
+                .map((r) => ({
+                id: r.song_id,
+                title: r.title,
+                performer: r.performer,
+                })),
+            }
         };
         return playlist;
     }
