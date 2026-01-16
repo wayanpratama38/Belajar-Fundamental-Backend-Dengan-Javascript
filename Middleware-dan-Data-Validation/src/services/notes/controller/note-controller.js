@@ -1,5 +1,8 @@
 import { nanoid } from 'nanoid';
 import notes from '../notes.js';
+import InvariantError from '../../../exceptions/invariant-error.js';
+import response from '../../../utils/response.js';
+import NotFoundError from '../../../exceptions/not-found-error.js';
 
 export const createNote = (req, res, next) => {
   try {
@@ -11,18 +14,10 @@ export const createNote = (req, res, next) => {
     notes.push(newNote);
 
     const isSuccess = notes.some((n) => n.id === id);
-    if (isSuccess) {
-      return res.status(201).json({
-        status: 'success',
-        message: 'Catatan berhasil ditambahkan',
-        data: { noteId: id }
-      });
+    if (!isSuccess) {
+      return next(new InvariantError('Catatan gagal ditambahkan'))
     }
-
-    return res.status(500).json({
-      status: 'fail',
-      message: 'Catatan gagal ditambahkan'
-    });
+    return response(res, 201, "Catatan berhasil ditambahkan", { noteId: id });
   } catch (err) {
     next(err);
   }
@@ -35,57 +30,39 @@ export const getNotes = (req, res) => {
   });
 };
 
-export const getNoteById = (req, res) => {
+export const getNoteById = (req, res, next) => {
   const { id } = req.params;
   const note = notes.find((n) => n.id === id);
 
-  if (note) {
-    return res.json({
-      status: 'success',
-      data: { note }
-    });
+  if (!note) {
+    return next(new NotFoundError('Catatan tidak ditemukan'))
   }
 
-  return res.status(404).json({
-    status: 'fail',
-    message: 'Catatan tidak ditemukan'
-  });
+  return response(res, 200, 'Catatan sukses ditampilkan', { note: note })
 };
 
-export const editNoteById = (req, res) => {
+export const editNoteById = (req, res, next) => {
   const { id } = req.params;
   const { title, tags, body } = req.body;
   const updatedAt = new Date().toISOString();
 
   const idx = notes.findIndex((n) => n.id === id);
   if (idx !== -1) {
-    notes[idx] = { ...notes[idx], title, tags, body, updatedAt };
-    return res.json({
-      status: 'success',
-      message: 'Catatan berhasil diperbarui'
-    });
+    return next(new NotFoundError('Catatan tidak ditemukan'));
   }
 
-  return res.status(404).json({
-    status: 'fail',
-    message: 'Gagal memperbarui catatan. Id tidak ditemukan'
-  });
+  notes[idx] = { ...notes[idx], title, tags, body, updatedAt }
+  return response(res, 200, 'Catatan berhasil diperbarui', notes[idx])
 };
 
-export const deleteNoteById = (req, res) => {
+export const deleteNoteById = (req, res, next) => {
   const { id } = req.params;
   const idx = notes.findIndex((n) => n.id === id);
 
   if (idx !== -1) {
-    notes.splice(idx, 1);
-    return res.json({
-      status: 'success',
-      message: 'Catatan berhasil dihapus'
-    });
+    return next(new NotFoundError('Catatan tidak ditemukan'))
   }
 
-  return res.status(404).json({
-    status: 'fail',
-    message: 'Catatan gagal dihapus. Id tidak ditemukan'
-  });
+  notes.splice(idx, 1);
+  return response(res, 200, 'Catatan berhasil dihapus', null)
 };
