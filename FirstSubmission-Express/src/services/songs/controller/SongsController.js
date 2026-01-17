@@ -1,12 +1,14 @@
-import InvariantError from "../../../exceptions/InvariantError.js";
-import NotFoundError from "../../../exceptions/NotFoundError.js";
-import response from "../../../utils/Response.js";
-import SongRepositories from "../repositories/SongRepositories.js";
+import InvariantError from '../../../exceptions/InvariantError.js';
+import NotFoundError from '../../../exceptions/NotFoundError.js';
+import response from '../../../utils/Response.js';
+import SongRepositories from '../repositories/SongRepositories.js';
 
 const SongController = {
   // POST
   async postNewSong(req, res, next) {
-    const { title, year, performer, genre, duration, albumId } = req.validate;
+    const {
+      title, year, performer, genre, duration, albumId,
+    } = req.validate;
     const song = await SongRepositories.createNewSong({
       title,
       year,
@@ -17,20 +19,21 @@ const SongController = {
     });
 
     if (!song) {
-      return next(new InvariantError("Lagu gagal ditambahkan"));
+      return next(new InvariantError('Lagu gagal ditambahkan'));
     }
 
-    return response(res, 201, "Lagu berhasil ditambahkan", { songId: song.id });
+    return response(res, 201, 'Lagu berhasil ditambahkan', { songId: song.id });
   },
 
   // GET ALL
   async getAllSongs(req, res, next) {
-    const songs = await SongRepositories.getAllSong();
+    const { title = '', performer = '' } = req.query;
+    const songs = await SongRepositories.getAllSong({ title, performer });
     if (!songs) {
-      return next(new NotFoundError("Tidak ada lagu yang ditemukan"));
+      return next(new NotFoundError('Tidak ada lagu yang ditemukan'));
     }
 
-    return response(res, 200, "Lagu berhasil didapatkan", { songs: songs });
+    return response(res, 200, 'Lagu berhasil didapatkan', { songs });
   },
 
   // GET BY ID
@@ -40,16 +43,18 @@ const SongController = {
     const song = await SongRepositories.getSongById(id);
 
     if (!song) {
-      return next(new NotFoundError("Tidak ada lagu yang ditemukan"));
+      return next(new NotFoundError('Tidak ada lagu yang ditemukan'));
     }
 
-    return response(res, 200, "Lagu berhasil didapatkan", { song: song });
+    return response(res, 200, 'Lagu berhasil didapatkan', { song });
   },
 
   // PUT
   async updateSongById(req, res, next) {
     const { id } = req.params;
-    const { title, year, performer, genre, duration, albumId } = req.validate;
+    const {
+      title, year, performer, genre, duration, albumId,
+    } = req.validate;
     const song = await SongRepositories.updateSongById(id, {
       title,
       year,
@@ -59,10 +64,10 @@ const SongController = {
       albumId,
     });
     if (!song) {
-      return next(new NotFoundError("Tidak ada lagu yang ditemukan"));
+      return next(new NotFoundError('Tidak ada lagu yang ditemukan'));
     }
 
-    return response(res, 200, "Lagu berhasil diperbarui", null);
+    return response(res, 200, 'Lagu berhasil diperbarui', null);
   },
 
   // DELETE
@@ -71,10 +76,10 @@ const SongController = {
     const { id } = req.params;
     const song = await SongRepositories.deleteSongById(id);
     if (!song) {
-      return next(new NotFoundError("Tidak ada lagu yang ditemukan"));
+      return next(new NotFoundError('Tidak ada lagu yang ditemukan'));
     }
 
-    return response(res, 200, "Lagu berhasil dihapus", null);
+    return response(res, 200, 'Lagu berhasil dihapus', null);
   },
 };
 

@@ -1,7 +1,8 @@
-import ClientError from "../exceptions/ClientError.js";
-import response from "../utils/Response.js";
+import ClientError from '../exceptions/ClientError.js';
+import response from '../utils/Response.js';
 
-const ErrorHandler = (err, req, res, next) => {
+// eslint-disable-next-line no-unused-vars
+const ErrorHandler = (err, req, res, _next) => {
   if (err instanceof ClientError) {
     return response(res, err.statusCode, err.message, null);
   }
@@ -11,7 +12,7 @@ const ErrorHandler = (err, req, res, next) => {
   }
 
   const status = err.statusCode || err.status || 500;
-  const message = err.message || "Internal Server Error";
+  const message = err.message || 'Internal Server Error';
 
   // console.error("Unhandled error:", err);
   return response(res, status, message, null);

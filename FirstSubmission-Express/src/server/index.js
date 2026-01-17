@@ -1,9 +1,10 @@
-import dotenv from "dotenv";
-dotenv.config();
+import dotenv from 'dotenv';
 
-import Express from "express";
-import ErrorHandler from "../middlewares/Error.js";
-import router from "../routes/index.js";
+import Express from 'express';
+import ErrorHandler from '../middlewares/Error.js';
+import router from '../routes/index.js';
+
+dotenv.config();
 
 const app = Express();
 

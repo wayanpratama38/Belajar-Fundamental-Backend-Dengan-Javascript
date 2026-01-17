@@ -1,7 +1,7 @@
-import response from "../../../utils/Response.js";
-import AlbumRepositories from "../repositories/AlbumRepositories.js";
-import InvariantError from "../../../exceptions/InvariantError.js";
-import NotFoundError from "../../../exceptions/NotFoundError.js";
+import response from '../../../utils/Response.js';
+import AlbumRepositories from '../repositories/AlbumRepositories.js';
+import InvariantError from '../../../exceptions/InvariantError.js';
+import NotFoundError from '../../../exceptions/NotFoundError.js';
 
 const AlbumController = {
   // POST /albums
@@ -13,10 +13,10 @@ const AlbumController = {
     });
 
     if (!album) {
-      return next(new InvariantError("Album gagal ditambahkan"));
+      return next(new InvariantError('Album gagal ditambahkan'));
     }
 
-    return response(res, 201, "Album berhasil ditambahkan", {
+    return response(res, 201, 'Album berhasil ditambahkan', {
       albumId: album.id,
     });
   },
@@ -27,10 +27,10 @@ const AlbumController = {
     const album = await AlbumRepositories.getAlbumById(id);
 
     if (!album) {
-      return next(new NotFoundError("Album tidak ditemukan"));
+      return next(new NotFoundError('Album tidak ditemukan'));
     }
 
-    return response(res, 200, "Album berhasil didapatkan", { album: album });
+    return response(res, 200, 'Album berhasil didapatkan', { album });
   },
 
   // PUT /albums/:id
@@ -42,10 +42,10 @@ const AlbumController = {
     const album = await AlbumRepositories.updateAlbumById(id, { name, year });
 
     if (!album) {
-      return next(new NotFoundError("Album tidak ditemukan"));
+      return next(new NotFoundError('Album tidak ditemukan'));
     }
 
-    return response(res, 200, "Album berhasil diperbarui", album);
+    return response(res, 200, 'Album berhasil diperbarui', album);
   },
 
   // DELETE /albums/:id
@@ -54,10 +54,10 @@ const AlbumController = {
     const { id } = req.params;
     const album = await AlbumRepositories.deleteAlbumById(id);
     if (!album) {
-      return next(new NotFoundError("Album tidak ditemukan"));
+      return next(new NotFoundError('Album tidak ditemukan'));
     }
 
-    return response(res, 200, "Album berhasil dihapuskan", album);
+    return response(res, 200, 'Album berhasil dihapuskan', album);
   },
 };
 

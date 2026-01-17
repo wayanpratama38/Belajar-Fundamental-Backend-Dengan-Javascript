@@ -1,4 +1,4 @@
-import Joi from "joi";
+import Joi from 'joi';
 
 const SongSchema = {
   createSongPayloadSchema: Joi.object({
@@ -17,6 +17,11 @@ const SongSchema = {
     performer: Joi.string().required(),
     duration: Joi.number(),
     albumId: Joi.string(),
+  }),
+
+  getSongQuerySchema: Joi.object({
+    title: Joi.string().empty(),
+    performer: Joi.string().empty(),
   }),
 };
 

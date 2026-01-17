@@ -1,5 +1,5 @@
-import { nanoid } from "nanoid";
-import { Pool } from "pg";
+import { nanoid } from 'nanoid';
+import { Pool } from 'pg';
 
 export default new (class AlbumRepositories {
   constructor() {
@@ -10,7 +10,7 @@ export default new (class AlbumRepositories {
   async createNewAlbum({ name, year }) {
     const id = nanoid(16);
     const query = {
-      text: "INSERT INTO albums(id,name,year) VALUES ($1,$2,$3) RETURNING id",
+      text: 'INSERT INTO albums(id,name,year) VALUES ($1,$2,$3) RETURNING id',
       values: [id, name, year],
     };
 
@@ -20,20 +20,40 @@ export default new (class AlbumRepositories {
 
   // Get album by id
   async getAlbumById(id) {
-    const query = {
-      text: "SELECT * FROM albums WHERE id=$1",
+    const albumQuery = {
+      text: 'SELECT * FROM albums WHERE id=$1',
       values: [id],
     };
 
-    const result = (await this.pool.query(query)).rows[0];
+    const album = (await this.pool.query(albumQuery)).rows[0];
+    if (!album) {
+      return album;
+    }
+    const songQuery = {
+      text: 'SELECT * FROM songs WHERE album_id = $1',
+      values: [album.id],
+    };
 
-    return result;
+    const songs = (await this.pool.query(songQuery)).rows.map((song) => ({
+      id: song.id,
+      title: song.title,
+      performer: song.performer,
+    }));
+
+    const response = {
+      id: album.id,
+      name: album.name,
+      year: album.year,
+      songs,
+    };
+
+    return response;
   }
 
   // Update album by id
   async updateAlbumById(id, { name, year }) {
     const query = {
-      text: "UPDATE albums SET name=$1, year=$2 WHERE id=$3 RETURNING id",
+      text: 'UPDATE albums SET name=$1, year=$2 WHERE id=$3 RETURNING id',
       values: [name, year, id],
     };
 
@@ -43,7 +63,7 @@ export default new (class AlbumRepositories {
   // DElete album by id
   async deleteAlbumById(id) {
     const query = {
-      text: "DELETE FROM albums WHERE id = $1 RETURNING id",
+      text: 'DELETE FROM albums WHERE id = $1 RETURNING id',
       values: [id],
     };
 
