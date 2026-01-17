@@ -43,7 +43,7 @@ export default new (class AlbumRepositories {
   // DElete album by id
   async deleteAlbumById(id) {
     const query = {
-      text: "DELETE * FROM albums WHERE id = $1 RETURNING id",
+      text: "DELETE FROM albums WHERE id = $1 RETURNING id",
       values: [id],
     };
 

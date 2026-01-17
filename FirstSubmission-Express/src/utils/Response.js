@@ -3,7 +3,8 @@ const response = (res, statusCode, message, data) => {
     .status(statusCode)
     .json({
       code: statusCode,
-      status: statusCode < 400 ? "success" : "fail",
+      status:
+        statusCode >= 500 ? "error" : statusCode < 400 ? "success" : "fail",
       message,
       data,
     })
