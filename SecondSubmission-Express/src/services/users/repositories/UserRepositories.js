@@ -18,6 +18,16 @@ export default new (class UserRepositories{
   return (await this.pool.query(query)).rowCount===0;
  }
 
+ // Get user by id
+ async getUserById(id){
+  const query = {
+   text : 'SELECT username FROM users WHERE id = $1',
+   values :[id]
+  }
+
+  return (await this.pool.query(query)).rows[0];
+ }
+
  // Get user by username
  async getUserByUsername(username){
   const query = {

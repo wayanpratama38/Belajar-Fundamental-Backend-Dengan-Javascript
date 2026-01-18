@@ -6,6 +6,16 @@ export default new (class SongRepositories {
     this.pool = new Pool();
   }
 
+  // verify song exist or not
+  async isSongAvailable(songId){
+   const query = {
+    text: "SELECT * FROM songs WHERE id = $1",
+    values : [songId]
+   }
+
+   return (await this.pool.query(query)).rowCount>0;
+  }
+
   // Create new song
   async createNewSong({
     title, year, genre, performer, duration, albumId,
