@@ -37,7 +37,14 @@ export default new (class PlaylistRepositories{
   }
 
   return (await this.pool.query(query)).rowCount>0;
+ }
 
+ async isPlaylistCollaborate(playlistId,userId){
+  const query = {
+   text : `SELECT p.id FROM playlists p LEFT JOIN collaborations c ON c.playlist_id = p.id WHERE p.id = $1 AND (p.owner=$2 OR c.user_id=$2)`,
+   values : [playlistId,userId]
+  }
+  return (await this.pool.query(query)).rowCount>0;
  }
 
 
@@ -54,22 +61,29 @@ export default new (class PlaylistRepositories{
   return result;
  }
 
- // Get all playlists 
+ // Get all playlists
  async getAllPlaylists(userId){
+
   const query = {
-   text : "SELECT * FROM playlists WHERE owner=$1",
+   text : 
+   `
+   SELECT p.id, p.name, u.username
+   FROM playlists p
+   LEFT JOIN users u ON p.owner = u.id
+   WHERE p.owner = $1
+   UNION
+   SELECT p.id, p.name, u.username
+   FROM collaborations c
+   JOIN playlists p ON c.playlist_id = p.id
+   LEFT JOIN users u ON p.owner = u.id
+   WHERE c.user_id = $1
+   `,
    values : [userId]
   }
-  const userData = await UserRepositories.getUserById(userId);
-  
-  const result = (await this.pool.query(query)).rows.map((playlist)=>{
-   return {
-    id : playlist.id,
-    name : playlist.name,
-    username : userData.username
-   }
-  });
 
+  const result = (await this.pool.query(query)).rows;
+
+  // return result;
   return result;
  }
 
@@ -85,8 +99,6 @@ export default new (class PlaylistRepositories{
 
  // Delete playlist
  async deletePlaylist(playlistId,userId){
-  // Check if the playlist with this id exist
-
   const query = {
    text : "DELETE FROM playlists WHERE id = $1 AND owner = $2",
    values : [playlistId,userId]
@@ -107,8 +119,6 @@ export default new (class PlaylistRepositories{
   await this.pool.query(query);
   
  }
-
-
 
  // Get song in playlist
  async getSongsInPlaylist(playlistId){

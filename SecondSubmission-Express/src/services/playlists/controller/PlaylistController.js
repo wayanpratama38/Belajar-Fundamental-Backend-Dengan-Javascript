@@ -14,7 +14,7 @@ const PlaylistController = {
   const {userId} = req.user;
 
   const isNameAvail = await PlaylistRepositories.isPlaylistAvailable(name,'');
-  if(isNameAvail){
+  if(!isNameAvail){
    return next(new InvariantError('Playlist dengan username tersebut sudah digunakan'))
   }
 
@@ -55,11 +55,10 @@ const PlaylistController = {
   const {songId} = req.validate;
 
 
-
   // Check if the playlist exists and belong to user
-  const isPlaylistExists = await PlaylistRepositories.isPlaylistAvailable('',id,userId);
+  const isPlaylistExists = await PlaylistRepositories.isPlaylistCollaborate(id,userId);
   if(!isPlaylistExists){
-   return next(new AuthorizationError('Playlist dengan Id tersebut tidak ditemukan'));
+   return next(new AuthorizationError('Tidak berhak untuk mengakses Playlist'));
   }
 
   // Check if the songs exists
@@ -87,7 +86,7 @@ const PlaylistController = {
    return next(new NotFoundError("Playlist dengan Id tersebut tidak ditemukan"))
   }
 
-  const isAuthorized = await PlaylistRepositories.isPlaylistAvailable('',id,userId);
+  const isAuthorized = await PlaylistRepositories.isPlaylistCollaborate(id,userId);
   if(!isAuthorized) {
    return next(new AuthorizationError("Tidak berhak untuk mendapatkan"))
   }
@@ -103,7 +102,7 @@ const PlaylistController = {
   const {userId} = req.user;
 
   // Check if the playlist exist
-  const isPlaylistExists = await PlaylistRepositories.isPlaylistAvailable('',id,userId);
+  const isPlaylistExists = await PlaylistRepositories.isPlaylistCollaborate(id,userId);
   if(!isPlaylistExists){
    return next(new AuthorizationError("Playlist dengan Id tersebut tidak ditemukan"))
   }
