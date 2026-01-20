@@ -7,13 +7,13 @@ export default new (class SongRepositories {
   }
 
   // verify song exist or not
-  async isSongAvailable(songId){
-   const query = {
-    text: "SELECT * FROM songs WHERE id = $1",
-    values : [songId]
-   }
+  async isSongAvailable(songId) {
+    const query = {
+      text: 'SELECT * FROM songs WHERE id = $1',
+      values: [songId],
+    };
 
-   return (await this.pool.query(query)).rowCount>0;
+    return (await this.pool.query(query)).rowCount > 0;
   }
 
   // Create new song

@@ -4,24 +4,24 @@
  * @returns {Promise<void> | void}
  */
 export const up = (pgm) => {
- pgm.createTable("collaborations",{
-  id : {
-   type : "VARCHAR(16)",
-   primaryKey : true
-  },
-  user_id : {
-   type : "VARCHAR(16)",
-   references : "users",
-   onDelete : "CASCADE",
-   notNull : true,
-  },
-  playlist_id : {
-   type : "VARCHAR(16)",
-   references : "playlists",
-   onDelete : "CASCADE",
-   notNull : true,
-  }
- })
+  pgm.createTable('collaborations', {
+    id: {
+      type: 'VARCHAR(16)',
+      primaryKey: true,
+    },
+    user_id: {
+      type: 'VARCHAR(16)',
+      references: 'users',
+      onDelete: 'CASCADE',
+      notNull: true,
+    },
+    playlist_id: {
+      type: 'VARCHAR(16)',
+      references: 'playlists',
+      onDelete: 'CASCADE',
+      notNull: true,
+    },
+  });
 };
 
 /**
@@ -30,5 +30,5 @@ export const up = (pgm) => {
  * @returns {Promise<void> | void}
  */
 export const down = (pgm) => {
- pgm.dropTable('collaborations')
+  pgm.dropTable('collaborations');
 };
