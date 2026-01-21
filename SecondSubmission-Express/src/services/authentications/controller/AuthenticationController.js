@@ -46,7 +46,7 @@ const AuthenticationController = {
       return next(new InvariantError('Refresh Token tidak valid'));
     }
 
-    const accessToken = TokenManager.generateAccessToken({ userId: result.id });
+    const accessToken = TokenManager.generateAccessToken({ userId: result.userId });
 
     return response(res, 200, 'Access token berhasil diperbarui', { accessToken });
   },
