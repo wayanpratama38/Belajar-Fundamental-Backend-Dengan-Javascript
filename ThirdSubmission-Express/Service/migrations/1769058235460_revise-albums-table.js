@@ -3,13 +3,8 @@
  * @param run {() => void | undefined}
  * @returns {Promise<void> | void}
  */
-export const up = (pgm) => {
-  pgm.addColumn('albums', {
-    cover: {
-      type: 'TEXT',
-    },
-  });
-};
+// eslint-disable-next-line no-unused-vars
+export const up = (pgm) => {};
 
 /**
  * @param pgm {import('node-pg-migrate').MigrationBuilder}
