@@ -5,6 +5,7 @@ import UserRouter from '../services/users/routes/UserRouter.js';
 import AuthenticationRouter from '../services/authentications/routes/AuthenticationRoute.js';
 import PlaylistRouter from '../services/playlists/routes/PlaylistRotes.js';
 import CollaborationRouter from '../services/collaborations/routes/CollaborationRouter.js';
+import ExportRouter from '../services/exports/routes/ExportRouter.js';
 
 const router = Router();
 
@@ -14,5 +15,6 @@ router.use(UserRouter);
 router.use(AuthenticationRouter);
 router.use(PlaylistRouter);
 router.use(CollaborationRouter);
+router.use(ExportRouter);
 
 export default router;
