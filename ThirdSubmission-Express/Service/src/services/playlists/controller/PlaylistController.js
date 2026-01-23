@@ -64,7 +64,7 @@ const PlaylistController = {
 
     // delete the playlist
     await PlaylistRepositories.deletePlaylist(id, userId);
-    
+
     return response(res, 200, 'Berhasil menghapus playlist');
   },
 

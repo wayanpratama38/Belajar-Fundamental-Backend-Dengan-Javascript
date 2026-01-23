@@ -4,6 +4,7 @@ import CollaborationRepositories from '../repositories/CollaborationRepositories
 import UserRepositories from '../../users/repositories/UserRepositories.js';
 import PlaylistRepositories from '../../playlists/repositories/PlaylistRepositories.js';
 import AuthorizationError from '../../../exceptions/AuthorizationError.js';
+import RedisService from '../../cache/RedisService.js';
 
 const CollaborationController = {
 
@@ -28,6 +29,12 @@ const CollaborationController = {
     const isUserExist = await UserRepositories.getUserById(userId);
     if (!isUserExist) {
       return next(new NotFoundError('User dengan Id tersebut tidak ditemukan'));
+    }
+
+    // remove cache
+    const cache = await RedisService.get(`playlists:${userId}`);
+    if(cache){
+     await RedisService.delete(`playlists:${userId}`);
     }
 
     // add to collaborations table
@@ -62,6 +69,12 @@ const CollaborationController = {
     const isCollaborator = await CollaborationRepositories.verifyCollaborator(playlistId, userId);
     if (!isCollaborator) {
       return next(new NotFoundError('Collaborator tidak ditemukan pada playlist ini'));
+    }
+
+    // remove cache
+    const cache = await RedisService.get(`playlists:${userId}`);
+    if(cache){
+     await RedisService.delete(`playlists:${userId}`);
     }
 
     // remove the collaborator from playlist
