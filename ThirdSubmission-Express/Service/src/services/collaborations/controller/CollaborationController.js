@@ -33,8 +33,8 @@ const CollaborationController = {
 
     // remove cache
     const cache = await RedisService.get(`playlists:${userId}`);
-    if(cache){
-     await RedisService.delete(`playlists:${userId}`);
+    if (cache) {
+      await RedisService.delete(`playlists:${userId}`);
     }
 
     // add to collaborations table
@@ -73,8 +73,8 @@ const CollaborationController = {
 
     // remove cache
     const cache = await RedisService.get(`playlists:${userId}`);
-    if(cache){
-     await RedisService.delete(`playlists:${userId}`);
+    if (cache) {
+      await RedisService.delete(`playlists:${userId}`);
     }
 
     // remove the collaborator from playlist

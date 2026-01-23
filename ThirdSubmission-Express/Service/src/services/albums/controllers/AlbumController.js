@@ -2,7 +2,6 @@ import response from '../../../utils/Response.js';
 import AlbumRepositories from '../repositories/AlbumRepositories.js';
 import InvariantError from '../../../exceptions/InvariantError.js';
 import NotFoundError from '../../../exceptions/NotFoundError.js';
-import FileTooLarge from '../../../exceptions/FileTooLarge.js';
 import RedisService from '../../cache/RedisService.js';
 
 const AlbumController = {
