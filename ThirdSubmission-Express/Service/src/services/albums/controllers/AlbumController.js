@@ -84,6 +84,63 @@ const AlbumController = {
 
     return response(res, 201, 'Sampul berhasil diunggah');
   },
+
+  // POST /albums/:id/likes
+  async likeAlbum(req, res, next) {
+    const { id: albumId } = req.params;
+    const { userId } = req.user;
+
+    // Check if the album exist
+    const isAlbumExist = await AlbumRepositories.verifyAlbumExistence(albumId);
+    if (!isAlbumExist) {
+      return next(new NotFoundError('Tidak ditemukan album dengan id tersebut'));
+    }
+
+    // Verify if already like album or not
+    const isAlbumLiked = await AlbumRepositories.verifyAlreadyLike(albumId, userId);
+    if (isAlbumLiked) {
+      return next(new InvariantError('Like hanya bisa dilakukan satu kali'));
+    }
+
+    await AlbumRepositories.addLikeToAlbum(albumId, userId);
+    return response(res, 201, 'Berhasil like album');
+  },
+
+  // DELETE /albums/:id/likes
+  async deleteLike(req, res, next) {
+    const { id: albumId } = req.params;
+    const { userId } = req.user;
+
+    // Check if the album exist
+    const isAlbumExist = await AlbumRepositories.verifyAlbumExistence(albumId);
+    if (!isAlbumExist) {
+      return next(new NotFoundError('Tidak ditemukan album dengan id tersebut'));
+    }
+
+    // Verify if already like album or not
+    const isAlbumLiked = await AlbumRepositories.verifyAlreadyLike(albumId, userId);
+    if (!isAlbumLiked) {
+      return next(new InvariantError('Delete like hanya bisa dilakukan ketika sudah like satu kali'));
+    }
+
+    await AlbumRepositories.deleteLikeToAlbum(albumId, userId);
+    return response(res, 200, 'Berhasil delete like album');
+  },
+
+  // GET /albums/:id/likes
+  async getLike(req, res, next) {
+    const { id: albumId } = req.params;
+
+    // Check if the album exist
+    const isAlbumExist = await AlbumRepositories.verifyAlbumExistence(albumId);
+    if (!isAlbumExist) {
+      return next(new NotFoundError('Tidak ditemukan album dengan id tersebut'));
+    }
+
+    const result = await AlbumRepositories.getAlbumLikeNumber(albumId);
+    return response(res, 200, 'Berhasil delete album', { likes: result });
+  },
+
 };
 
 export default AlbumController;

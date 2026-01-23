@@ -85,9 +85,6 @@ export default new (class AlbumRepositories {
   // Add album cover
   async addAlbumCover(file, albumId) {
     const fileName = `${Date.now()}-${file.originalname}`;
-    // console.log(file);
-    console.log(process.env.AWS_ACCESS_KEY_ID);
-    console.log(process.env.AWS_SECRET_ACCESS_KEY);
     const fileLocation = await S3Service.writeFile(file, {
       fileName,
       contentType: file.mimetype,
@@ -100,5 +97,47 @@ export default new (class AlbumRepositories {
 
     const result = (await this.pool.query(query)).rows;
     return result;
+  }
+
+  // Add like to albums
+  async addLikeToAlbum(albumId, userId) {
+    const id = nanoid(16);
+
+    const query = {
+      text: 'INSERT INTO user_album_likes(id,user_id,album_id) VALUES ($1,$2,$3)',
+      values: [id, userId, albumId],
+    };
+
+    await this.pool.query(query);
+  }
+
+  // Delete like to albums
+  async deleteLikeToAlbum(albumId, userId) {
+    const query = {
+      text: 'DELETE FROM user_album_likes WHERE album_id = $1 AND user_id = $2',
+      values: [albumId, userId],
+    };
+
+    await this.pool.query(query);
+  }
+
+  // Get like number from albums
+  async getAlbumLikeNumber(albumId) {
+    const query = {
+      text: 'SELECT * FROM user_album_likes WHERE album_id = $1',
+      values: [albumId],
+    };
+
+    const result = (await this.pool.query(query)).rowCount;
+    return result;
+  }
+
+  // Verify if already like or not
+  async verifyAlreadyLike(albumId, userId) {
+    const query = {
+      text: 'SELECT * FROM user_album_likes WHERE album_id = $1 AND user_id = $2',
+      values: [albumId, userId],
+    };
+    return (await this.pool.query(query)).rowCount > 0;
   }
 })();
