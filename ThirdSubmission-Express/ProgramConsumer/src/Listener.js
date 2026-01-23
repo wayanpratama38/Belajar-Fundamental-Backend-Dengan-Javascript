@@ -12,7 +12,6 @@ export default class Listener{
 
    const playlist = await this._playlistService.getPlaylist(playlistId);
    const result = await this._mailService.sendEmail(targetEmail,playlist);
-   console.log(result)
   } catch (err) {
    console.error(err)
   }
