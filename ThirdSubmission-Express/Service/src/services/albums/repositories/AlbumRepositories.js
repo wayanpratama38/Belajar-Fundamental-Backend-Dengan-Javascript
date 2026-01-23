@@ -1,9 +1,20 @@
 import { nanoid } from 'nanoid';
 import { Pool } from 'pg';
+import S3Service from '../../storage/S3Service.js';
 
 export default new (class AlbumRepositories {
   constructor() {
     this.pool = new Pool();
+  }
+
+  // Verify album
+  async verifyAlbumExistence(albumId) {
+    const query = {
+      text: 'SELECT * FROM albums WHERE id=$1',
+      values: [albumId],
+    };
+
+    return (await this.pool.query(query)).rowCount > 0;
   }
 
   // Create new album
@@ -43,6 +54,7 @@ export default new (class AlbumRepositories {
     const response = {
       id: album.id,
       name: album.name,
+      coverUrl: album.cover,
       year: album.year,
       songs,
     };
@@ -68,5 +80,25 @@ export default new (class AlbumRepositories {
     };
 
     return (await this.pool.query(query)).rows[0];
+  }
+
+  // Add album cover
+  async addAlbumCover(file, albumId) {
+    const fileName = `${Date.now()}-${file.originalname}`;
+    // console.log(file);
+    console.log(process.env.AWS_ACCESS_KEY_ID);
+    console.log(process.env.AWS_SECRET_ACCESS_KEY);
+    const fileLocation = await S3Service.writeFile(file, {
+      fileName,
+      contentType: file.mimetype,
+    });
+
+    const query = {
+      text: 'UPDATE albums SET cover=$1 WHERE id=$2',
+      values: [fileLocation, albumId],
+    };
+
+    const result = (await this.pool.query(query)).rows;
+    return result;
   }
 })();

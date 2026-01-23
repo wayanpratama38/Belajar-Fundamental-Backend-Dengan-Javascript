@@ -2,6 +2,7 @@ import response from '../../../utils/Response.js';
 import AlbumRepositories from '../repositories/AlbumRepositories.js';
 import InvariantError from '../../../exceptions/InvariantError.js';
 import NotFoundError from '../../../exceptions/NotFoundError.js';
+import FileTooLarge from '../../../exceptions/FileTooLarge.js';
 
 const AlbumController = {
   // POST /albums
@@ -58,6 +59,30 @@ const AlbumController = {
     }
 
     return response(res, 200, 'Album berhasil dihapuskan', album);
+  },
+
+  // POST /albums/:id/covers
+  async addAlbumCover(req, res, next) {
+    const { id: albumId } = req.params;
+
+    // Check if the album exist
+    const isAlbumExist = await AlbumRepositories.verifyAlbumExistence(albumId);
+    if (!isAlbumExist) {
+      return next(new NotFoundError('Tidak ditemukan album dengan id tersebut'));
+    }
+
+    if (req.file === undefined) {
+      return next(new FileTooLarge('File Terlalu besar'));
+    }
+
+    // Check if the payload is valid or not
+    if (!req.file) {
+      return next(new InvariantError('No File uploaded'));
+    }
+
+    await AlbumRepositories.addAlbumCover(req.file, albumId);
+
+    return response(res, 201, 'Sampul berhasil diunggah');
   },
 };
 
