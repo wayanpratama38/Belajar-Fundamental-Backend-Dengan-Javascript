@@ -3,6 +3,7 @@ import AlbumRepositories from '../repositories/AlbumRepositories.js';
 import InvariantError from '../../../exceptions/InvariantError.js';
 import NotFoundError from '../../../exceptions/NotFoundError.js';
 import FileTooLarge from '../../../exceptions/FileTooLarge.js';
+import RedisService from '../../cache/RedisService.js';
 
 const AlbumController = {
   // POST /albums
@@ -71,11 +72,6 @@ const AlbumController = {
       return next(new NotFoundError('Tidak ditemukan album dengan id tersebut'));
     }
 
-    if (req.file === undefined) {
-      return next(new FileTooLarge('File Terlalu besar'));
-    }
-
-    // Check if the payload is valid or not
     if (!req.file) {
       return next(new InvariantError('No File uploaded'));
     }
@@ -137,8 +133,18 @@ const AlbumController = {
       return next(new NotFoundError('Tidak ditemukan album dengan id tersebut'));
     }
 
+    // validate if cache already have or not
+    const cache = await RedisService.get(`albumLikes:${albumId}`);
+    if (cache) {
+      res.set('X-Data-Source', 'cache');
+      return response(res, 200, 'Berhasil mednapatkan like album dari cache', { likes: Number(cache) });
+    }
+
     const result = await AlbumRepositories.getAlbumLikeNumber(albumId);
-    return response(res, 200, 'Berhasil delete album', { likes: result });
+    res.set('X-Data-Source', 'Database');
+    // Save to Cache
+    RedisService.set(`albumLikes:${albumId}`, JSON.stringify(result));
+    return response(res, 200, 'Berhasil mendapatkan like album', { likes: result });
   },
 
 };

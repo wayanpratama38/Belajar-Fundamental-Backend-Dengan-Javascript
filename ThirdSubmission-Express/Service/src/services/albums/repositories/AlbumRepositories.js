@@ -1,6 +1,7 @@
 import { nanoid } from 'nanoid';
 import { Pool } from 'pg';
 import S3Service from '../../storage/S3Service.js';
+import RedisService from '../../cache/RedisService.js';
 
 export default new (class AlbumRepositories {
   constructor() {
@@ -119,6 +120,8 @@ export default new (class AlbumRepositories {
     };
 
     await this.pool.query(query);
+    // Delete current cache
+    RedisService.delete(`albumLikes:${albumId}`);
   }
 
   // Get like number from albums
