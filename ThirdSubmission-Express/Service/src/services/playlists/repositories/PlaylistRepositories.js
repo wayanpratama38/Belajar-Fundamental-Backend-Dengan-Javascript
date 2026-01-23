@@ -2,6 +2,7 @@ import { nanoid } from 'nanoid';
 import { Pool } from 'pg';
 import UserRepositories from '../../users/repositories/UserRepositories.js';
 import SongRepositories from '../../songs/repositories/SongRepositories.js';
+import RedisService from '../../cache/RedisService.js';
 
 export default new (class PlaylistRepositories {
   constructor() {
@@ -78,6 +79,10 @@ export default new (class PlaylistRepositories {
     };
 
     const result = (await this.pool.query(query)).rows;
+
+    // Cache
+    const forCache= result.map((res)=> JSON.stringify(res));
+    await RedisService.set(`playlists:${userId}`,JSON.stringify(forCache));
 
     // return result;
     return result;
@@ -193,6 +198,14 @@ export default new (class PlaylistRepositories {
       action: song.action,
       time: song.time,
     }));
-    return { playlistId, activities: result };
+
+    const response  = {
+     playlistId,
+     activities : result
+    }
+
+    // Set to cache
+    await RedisService.set(`playlistActivities:${playlistId}`,JSON.stringify(response))
+    return response;
   }
 })();

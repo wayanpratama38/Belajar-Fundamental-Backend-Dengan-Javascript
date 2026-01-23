@@ -2,6 +2,7 @@ import AuthorizationError from '../../../exceptions/AuthorizationError.js';
 import InvariantError from '../../../exceptions/InvariantError.js';
 import NotFoundError from '../../../exceptions/NotFoundError.js';
 import response from '../../../utils/Response.js';
+import RedisService from '../../cache/RedisService.js';
 import SongRepositories from '../../songs/repositories/SongRepositories.js';
 import PlaylistRepositories from '../repositories/PlaylistRepositories.js';
 
@@ -17,6 +18,12 @@ const PlaylistController = {
       return next(new InvariantError('Playlist dengan username tersebut sudah digunakan'));
     }
 
+    // Check if have cache or not
+    const cache = await RedisService.get(`playlists:${userId}`);
+    if(cache){
+     await RedisService.delete(`playlists:${userId}`);
+    }
+
     const result = await PlaylistRepositories.createNewPlaylist(name, userId);
     return response(res, 201, 'Berhasil membuat playlist baru', { playlistId: result.id });
   },
@@ -26,6 +33,14 @@ const PlaylistController = {
   async getAllPlaylists(req, res, next) {
     const { userId } = req.user;
 
+    const cache = await RedisService.get(`playlists:${userId}`);
+    if(cache){
+     const result = JSON.parse(cache).map((res)=> JSON.parse(res));
+     res.set('X-Data-Source','cache');
+     return response(res, 200, 'Berhasil mendapatkan semua playlist', { playlists: result });
+     
+    }
+    
     const result = await PlaylistRepositories.getAllPlaylists(userId);
     return response(res, 200, 'Berhasil mendapatkan semua playlist', { playlists: result });
   },
@@ -41,9 +56,15 @@ const PlaylistController = {
       return next(new AuthorizationError('Playlist dengan Id tersebut tidak ditemukan'));
     }
 
+    // Check if have cache or not
+    const cache = await RedisService.get(`playlists:${userId}`);
+    if(cache){
+     await RedisService.delete(`playlists:${userId}`);
+    }
+
     // delete the playlist
     await PlaylistRepositories.deletePlaylist(id, userId);
-
+    
     return response(res, 200, 'Berhasil menghapus playlist');
   },
 
@@ -70,6 +91,12 @@ const PlaylistController = {
 
     // add to activities
     await PlaylistRepositories.addPlaylistSongAcitivities(id, songId, userId, 'add');
+
+    // remove cache
+    const cache = await RedisService.get(`playlistActivities:${id}`);
+    if(cache){
+     await RedisService.delete(`playlistActivities:${id}`);
+    }
 
     return response(res, 201, 'Berhasil menambahkan lagu kedalam playlist');
   },
@@ -119,6 +146,12 @@ const PlaylistController = {
     // add to playlist activities
     await PlaylistRepositories.addPlaylistSongAcitivities(id, songId, userId, 'delete');
 
+    // remove cache
+    const cache = await RedisService.get(`playlistActivities:${id}`);
+    if(cache){
+     await RedisService.delete(`playlistActivities:${id}`);
+    }
+ 
     // send response
     return response(res, 200, 'Berhasil menghapus lagu didalam playlist');
   },
@@ -138,6 +171,14 @@ const PlaylistController = {
     const isAuthorize = await PlaylistRepositories.isPlaylistCollaborate(playlistId, userId);
     if (!isAuthorize) {
       return next(new AuthorizationError('Tidak berhak untuk mengakses Playlist'));
+    }
+
+
+    // Get from cache
+    const cache = await RedisService.get(`playlistActivities:${playlistId}`);
+    if(cache){
+     res.set('X-Data-Source','cache');
+     return response(res,200,'Berhasi mendapatkan aktivitas dari playlist', JSON.parse(cache))
     }
 
     // Get the activities
